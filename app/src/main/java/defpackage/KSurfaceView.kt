@@ -1,8 +1,10 @@
 package defpackage
 
+import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
 import android.os.Build
 import android.util.AttributeSet
 import android.view.SurfaceHolder
@@ -11,6 +13,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.concurrent.atomic.AtomicBoolean
 
 class KSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope {
@@ -41,41 +44,37 @@ class KSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope {
         holder.addCallback(this)
     }
 
-    override fun onDraw(canvas: Canvas) {
-
-    }
-
+    @SuppressLint("WrongCall")
     override fun surfaceCreated(holder: SurfaceHolder) {
-        if (isRunning.compareAndSet(false, true)) {
-            launch {
+        isRunning.set(true)
+        launch {
+            try {
                 while (isRunning.get()) {
-
-                    var c: Canvas? = null
-                    try {
-                        c = holder.lockCanvas(null)
-                        synchronized(holder) {
-                            draw(c)
-                        }
-                    } finally {
-                        // do this in a finally so that if an exception is thrown
-                        // during the above, we don't leave the Surface in an
-                        // inconsistent state
-                        if (c != null) {
-                            holder.unlockCanvasAndPost(c)
+                    holder.lockCanvas(null)?.let {
+                        try {
+                            synchronized(holder) {
+                                onDraw(it)
+                            }
+                        } finally {
+                            holder.unlockCanvasAndPost(it)
                         }
                     }
                 }
+            } catch (e: Exception) {
+                Timber.e(e)
             }
         }
+    }
+
+    override fun onDraw(canvas: Canvas) {
+        canvas.drawColor(Color.RED)
     }
 
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {}
 
     override fun surfaceDestroyed(holder: SurfaceHolder) {
-        job.complete()
-        job.isActive
         job.cancel()
     }
 
-    override val coroutineContext = Dispatchers.Main + job
+    override val coroutineContext = Dispatchers.Default + job
 }
