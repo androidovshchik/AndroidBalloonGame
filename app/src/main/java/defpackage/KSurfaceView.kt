@@ -13,7 +13,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.util.concurrent.atomic.AtomicBoolean
 
 class KSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope {
@@ -48,20 +47,16 @@ class KSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope {
     override fun surfaceCreated(holder: SurfaceHolder) {
         isRunning.set(true)
         launch {
-            try {
-                while (isRunning.get()) {
-                    holder.lockCanvas(null)?.let {
-                        try {
-                            synchronized(holder) {
-                                onDraw(it)
-                            }
-                        } finally {
-                            holder.unlockCanvasAndPost(it)
+            while (isRunning.get()) {
+                holder.lockCanvas(null)?.let {
+                    try {
+                        synchronized(holder) {
+                            onDraw(it)
                         }
+                    } finally {
+                        holder.unlockCanvasAndPost(it)
                     }
                 }
-            } catch (e: Exception) {
-                Timber.e(e)
             }
         }
     }
