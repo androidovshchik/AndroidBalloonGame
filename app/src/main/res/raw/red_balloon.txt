@@ -1,0 +1,160 @@
+--- !u!114 &1789942516019816461
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1, guid: 46f130c51c7f4014919c575f807cea47, type: 2}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e55369551c028e4a164c514a274ed352, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  material: {fileID: 2100000, guid: 06b6cb4bb39443e88e94735728d11551, type: 2}
+  mSprites:
+  - name: "redBalloon_0001"
+    x: 695
+    y: 487
+    width: 181
+    height: 208
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
+    paddingLeft: 29
+    paddingRight: 30
+    paddingTop: 15
+    paddingBottom: 17
+  - name: "redBalloon_0002"
+    x: 840
+    y: 817
+    width: 182
+    height: 207
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
+    paddingLeft: 28
+    paddingRight: 30
+    paddingTop: 16
+    paddingBottom: 17
+  - name: "redBalloon_0003"
+    x: 322
+    y: 70
+    width: 184
+    height: 208
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
+    paddingLeft: 27
+    paddingRight: 29
+    paddingTop: 16
+    paddingBottom: 16
+  - name: "redBalloon_0004"
+    x: 510
+    y: 487
+    width: 184
+    height: 208
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
+    paddingLeft: 27
+    paddingRight: 29
+    paddingTop: 16
+    paddingBottom: 16
+  - name: "redBalloon_0005"
+    x: 322
+    y: 279
+    width: 185
+    height: 208
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
+    paddingLeft: 27
+    paddingRight: 28
+    paddingTop: 16
+    paddingBottom: 16
+  - name: "redBalloon_0006"
+    x: 322
+    y: 488
+    width: 187
+    height: 207
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
+    paddingLeft: 26
+    paddingRight: 27
+    paddingTop: 17
+    paddingBottom: 16
+  - name: "redBalloon_0007"
+    x: 651
+    y: 816
+    width: 188
+    height: 208
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
+    paddingLeft: 25
+    paddingRight: 27
+    paddingTop: 17
+    paddingBottom: 15
+  - name: "redBalloonPop_0001"
+    x: 0
+    y: 154
+    width: 217
+    height: 244
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
+    paddingLeft: 67
+    paddingRight: 66
+    paddingTop: 53
+    paddingBottom: 53
+  - name: "redBalloonPop_0002"
+    x: 0
+    y: 399
+    width: 262
+    height: 278
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
+    paddingLeft: 44
+    paddingRight: 44
+    paddingTop: 37
+    paddingBottom: 35
+  - name: "redBalloonPop_0003"
+    x: 0
+    y: 678
+    width: 321
+    height: 346
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
+    paddingLeft: 13
+    paddingRight: 16
+    paddingTop: 4
+    paddingBottom: 0
+  - name: "redBalloonPop_0004"
+    x: 322
+    y: 696
+    width: 328
+    height: 328
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
+    paddingLeft: 11
+    paddingRight: 11
+    paddingTop: 11
+    paddingBottom: 11
+  mPixelSize: 1
+  mReplacement: {fileID: 0}
+  mCoordinates: 0
+  sprites: []
