@@ -44,7 +44,7 @@ Java_defpackage_DrawActivity_draw_on_bitmap(JNIEnv *env, jobject, jobject dstBit
     AndroidBitmap_unlockPixels(env, dstBitmap);
 }
 
-extern "C"
+/*extern "C"
 
 JNIEXPORT void JNICALL
 Java_defpackage_DrawActivity_draw_on_bitmap(JNIEnv *env, jobject, jobject dstBitmap) {
@@ -81,4 +81,4 @@ Java_defpackage_DrawActivity_draw_on_bitmap(JNIEnv *env, jobject, jobject dstBit
 
     // Unlock the dst's pixels
     AndroidBitmap_unlockPixels(env, dstBitmap);
-}
+}*/

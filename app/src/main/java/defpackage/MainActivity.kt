@@ -7,28 +7,20 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var fMainView: SkiaDrawView
+    private lateinit var fMainView: KSurfaceView
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        fMainView = SkiaDrawView(this).apply {
+        fMainView = KSurfaceView(applicationContext).apply {
             layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT
             )
         }
         setContentView(fMainView)
-        val fAnimationTimer = Timer()
-        fAnimationTimer.schedule(object : TimerTask() {
-
-            override fun run() {
-                fMainView.postInvalidate()
-            }
-        }, 0, 5)
         //val timer = Executors.newScheduledThreadPool(1)
         /*counter = timer.scheduleWithFixedDelay({
             if (!isFinishing) {
@@ -50,7 +42,7 @@ private class SkiaDrawView(ctx: Context) : View(ctx) {
 
     override fun onDraw(canvas: Canvas) {
         if (::fSkiaBitmap.isInitialized) {
-            cdraw(fSkiaBitmap)
+            //cdraw(fSkiaBitmap)
             canvas.drawBitmap(fSkiaBitmap, 0f, 0f, null)
         }
     }
