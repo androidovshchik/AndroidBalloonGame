@@ -4,13 +4,19 @@ import android.annotation.TargetApi
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.PorterDuff
+import android.graphics.Paint
 import android.os.Build
 import android.util.AttributeSet
 import android.view.MotionEvent
 
 @Suppress("MemberVisibilityCanBePrivate")
 class GameSurfaceView : BaseSurfaceView {
+
+    private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        isFakeBoldText = true
+        color = Color.WHITE
+        textSize = 30f
+    }
 
     @JvmOverloads
     constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : super(
@@ -29,11 +35,10 @@ class GameSurfaceView : BaseSurfaceView {
     )
 
     override fun onDraw(canvas: Canvas) {
-        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
-        super.onDraw(canvas)
+        canvas.drawText("30 FPS", 100f, 100f, paint)
     }
 
-    override fun onSingleTapUp(e: MotionEvent): Boolean {
-        return super.onSingleTapUp(e)
+    override fun onDown(e: MotionEvent): Boolean {
+        return super.onDown(e)
     }
 }

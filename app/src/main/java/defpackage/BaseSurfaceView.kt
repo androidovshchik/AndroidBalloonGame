@@ -3,9 +3,6 @@ package defpackage
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
 import android.graphics.PixelFormat
 import android.os.Build
 import android.util.AttributeSet
@@ -13,7 +10,6 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
-import androidovshchik.jerrygame.BuildConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -25,12 +21,6 @@ open class BaseSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope
 
     var isRunning = AtomicBoolean(false)
         private set
-
-    private val debugPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        isFakeBoldText = true
-        color = Color.WHITE
-        textSize = 16f
-    }
 
     private val detector = GestureDetector(context, this)
 
@@ -56,6 +46,10 @@ open class BaseSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope
             setZOrderOnTop(true)
             setFormat(PixelFormat.TRANSPARENT)
         }
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
         holder.addCallback(this)
     }
 
@@ -68,18 +62,15 @@ open class BaseSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope
         if (isRunning.compareAndSet(false, true)) {
             launch {
                 while (isRunning.get()) {
-                    holder.lock {
-                        onDraw(it)
+                    holder.apply {
+                        lockCanvas(null)?.let {
+                            onDraw(it)
+                            unlockCanvasAndPost(it)
+                        }
                     }
                 }
                 cancel()
             }
-        }
-    }
-
-    override fun onDraw(canvas: Canvas) {
-        if (BuildConfig.DEBUG) {
-            canvas.drawText("30 FPS", 100f, 100f, debugPaint)
         }
     }
 
@@ -110,20 +101,10 @@ open class BaseSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope
 
     override fun onLongPress(e: MotionEvent) {}
 
-    override val coroutineContext = Dispatchers.Default
-}
-
-inline fun <T : SurfaceHolder> T.lock(crossinline block: (Canvas) -> Unit) {
-    var canvas: Canvas? = null
-    try {
-        canvas = lockCanvas(null)?.also {
-            synchronized(this) {
-                block(it)
-            }
-        }
-    } finally {
-        canvas?.let {
-            unlockCanvasAndPost(it)
-        }
+    override fun onDetachedFromWindow() {
+        holder.removeCallback(this)
+        super.onDetachedFromWindow()
     }
+
+    override val coroutineContext = Dispatchers.Default
 }
