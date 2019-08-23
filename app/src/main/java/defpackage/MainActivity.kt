@@ -11,9 +11,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         frameLayout {
             lparams(matchParent, matchParent)
-            gameSurfaceView {
-                lparams(matchParent, matchParent)
-            }
+            gameSurfaceView().lparams(matchParent, matchParent)
         }
     }
 }

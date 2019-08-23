@@ -35,10 +35,12 @@ class GameSurfaceView : BaseSurfaceView {
     )
 
     override fun onDraw(canvas: Canvas) {
-        canvas.drawText("30 FPS", 100f, 100f, paint)
+
+        super.onDraw(canvas)
     }
 
     override fun onDown(e: MotionEvent): Boolean {
+
         return super.onDown(e)
     }
 }

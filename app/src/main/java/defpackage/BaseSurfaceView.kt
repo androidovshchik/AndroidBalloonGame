@@ -3,6 +3,9 @@ package defpackage
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
 import android.graphics.PixelFormat
 import android.os.Build
 import android.util.AttributeSet
@@ -10,6 +13,7 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
+import androidovshchik.jerrygame.BuildConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -23,6 +27,12 @@ open class BaseSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope
         private set
 
     private val detector = GestureDetector(context, this)
+
+    private val debugPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        isFakeBoldText = true
+        color = Color.WHITE
+        textSize = 30f
+    }
 
     @JvmOverloads
     constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : super(
@@ -71,6 +81,12 @@ open class BaseSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope
                 }
                 cancel()
             }
+        }
+    }
+
+    override fun onDraw(canvas: Canvas) {
+        if (BuildConfig.DEBUG) {
+            canvas.drawText("30 FPS", 100f, 100f, debugPaint)
         }
     }
 
