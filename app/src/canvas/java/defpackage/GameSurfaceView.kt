@@ -3,7 +3,6 @@ package defpackage
 import android.annotation.TargetApi
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Paint
 import android.os.Build
 import android.util.AttributeSet
 import android.view.MotionEvent
@@ -11,11 +10,7 @@ import android.view.MotionEvent
 @Suppress("MemberVisibilityCanBePrivate")
 class GameSurfaceView : BaseSurfaceView {
 
-    private val streamManager = StreamManager(context)
-
-    private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-
-    }
+    private val gameManager = GameManager(context)
 
     @JvmOverloads
     constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : super(
@@ -33,18 +28,18 @@ class GameSurfaceView : BaseSurfaceView {
         defStyleRes
     )
 
-    override fun onDraw(canvas: Canvas) = canvas.run {
-        super.onDraw(this)
-        streamManager.onDraw(canvas, paint)
+    override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
+        gameManager.onDraw(output ?: return)
     }
 
     override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-        streamManager.onSingleTap(e)
+        gameManager.onSingleTap(e)
         return super.onSingleTapConfirmed(e)
     }
 
     override fun onDetachedFromWindow() {
-        streamManager.release()
+        gameManager.release()
         super.onDetachedFromWindow()
     }
 }

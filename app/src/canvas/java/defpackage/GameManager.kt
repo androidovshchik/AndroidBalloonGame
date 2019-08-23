@@ -1,12 +1,15 @@
 package defpackage
 
 import android.content.Context
-import android.graphics.Canvas
+import android.graphics.Bitmap
 import android.graphics.Paint
-import android.view.MotionEvent
 
 @Suppress("MemberVisibilityCanBePrivate")
-class StreamManager(context: Context) {
+class GameManager(context: Context) : GameLifecycle {
+
+    private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+
+    }
 
     private val ballSet = arrayListOf<BallSet>(
         BallSet(),
@@ -16,15 +19,15 @@ class StreamManager(context: Context) {
         BallSet()
     )
 
-    fun onDraw(canvas: Canvas, paint: Paint) = canvas.run {
+    override fun onDraw(output: Bitmap?) = canvas.run {
 
     }
 
-    fun onSingleTap(e: MotionEvent) {
+    override fun onSingleTap(x: Float, y: Float) {
 
     }
 
-    fun release() {
+    override fun onDestroy() {
         ballSet.forEach {
             it.release()
         }

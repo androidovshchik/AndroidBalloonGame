@@ -20,11 +20,15 @@ import org.jetbrains.anko.sp
 import java.util.concurrent.atomic.AtomicBoolean
 
 @Suppress("MemberVisibilityCanBePrivate", "LeakingThis")
-open class BaseSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope, GestureDetector.OnGestureListener,
+abstract class BaseSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope, GestureDetector.OnGestureListener,
     GestureDetector.OnDoubleTapListener {
+
+    abstract val manager: GameLifecycle
 
     var isRunning = AtomicBoolean(false)
         private set
+
+    protected var output: Bitmap? = null
 
     protected val defaultMargin = dip(16).toFloat()
 
@@ -115,6 +119,10 @@ open class BaseSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope
 
     fun stop() {
         isRunning.set(false)
+    }
+
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        output = Bitmap.createBitmap(800, 800, Bitmap.Config.ARGB_8888)
     }
 
     @SuppressLint("ClickableViewAccessibility")

@@ -4,6 +4,7 @@ import android.app.Application
 import androidovshchik.jerrygame.BuildConfig
 import timber.log.Timber
 
+@Suppress("unused")
 class MainApp : Application() {
 
     override fun onCreate() {
