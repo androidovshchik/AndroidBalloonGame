@@ -3,6 +3,8 @@ package defpackage
 import android.annotation.TargetApi
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Build
 import android.util.AttributeSet
 import android.view.MotionEvent
@@ -27,12 +29,11 @@ class GameSurfaceView : BaseSurfaceView {
     )
 
     override fun onDraw(canvas: Canvas) {
-
+        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
         super.onDraw(canvas)
     }
 
-    override fun onDown(e: MotionEvent): Boolean {
-
-        return super.onDown(e)
+    override fun onSingleTapUp(e: MotionEvent): Boolean {
+        return super.onSingleTapUp(e)
     }
 }

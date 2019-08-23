@@ -4,6 +4,9 @@ import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.PixelFormat
 import android.os.Build
 import android.util.AttributeSet
 import android.view.GestureDetector
@@ -22,6 +25,12 @@ open class BaseSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope
 
     var isRunning = AtomicBoolean(false)
         private set
+
+    private val debugPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        isFakeBoldText = true
+        color = Color.WHITE
+        textSize = 16f
+    }
 
     private val detector = GestureDetector(context, this)
 
@@ -43,7 +52,10 @@ open class BaseSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope
 
     init {
         isFocusable = true
-        keepScreenOn = true
+        holder.apply {
+            setZOrderOnTop(true)
+            setFormat(PixelFormat.TRANSPARENT)
+        }
         holder.addCallback(this)
     }
 
@@ -67,7 +79,7 @@ open class BaseSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope
 
     override fun onDraw(canvas: Canvas) {
         if (BuildConfig.DEBUG) {
-
+            canvas.drawText("30 FPS", 100f, 100f, debugPaint)
         }
     }
 
@@ -86,15 +98,15 @@ open class BaseSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope
         return detector.onTouchEvent(event)
     }
 
-    override fun onShowPress(e: MotionEvent) {}
+    override fun onDown(e: MotionEvent) = true
 
     override fun onSingleTapUp(e: MotionEvent) = true
 
-    override fun onDown(e: MotionEvent) = true
+    override fun onScroll(e1: MotionEvent, e2: MotionEvent, distanceX: Float, distanceY: Float) = true
 
     override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float) = true
 
-    override fun onScroll(e1: MotionEvent, e2: MotionEvent, distanceX: Float, distanceY: Float) = true
+    override fun onShowPress(e: MotionEvent) {}
 
     override fun onLongPress(e: MotionEvent) {}
 
