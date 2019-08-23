@@ -63,15 +63,12 @@ open class BaseSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope
 
     init {
         isFocusable = true
+        setZOrderOnTop(true)
         holder.apply {
-            setZOrderOnTop(true)
+            // todo without below
             setFormat(PixelFormat.TRANSPARENT)
+            addCallback(this@BaseSurfaceView)
         }
-    }
-
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        holder.addCallback(this)
     }
 
     override fun surfaceCreated(holder: SurfaceHolder) {
@@ -143,9 +140,8 @@ open class BaseSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope
 
     override fun onLongPress(e: MotionEvent) {}
 
-    override fun onDetachedFromWindow() {
+    open fun release() {
         holder.removeCallback(this)
-        super.onDetachedFromWindow()
     }
 
     override val coroutineContext = Dispatchers.Default
