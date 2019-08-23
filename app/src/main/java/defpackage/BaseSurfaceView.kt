@@ -105,7 +105,8 @@ open class BaseSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope
             debugPaint.color = 0x56000000
             drawRect(0f, 0f, width.toFloat(), toolbarHeight, debugPaint)
             debugPaint.color = Color.WHITE
-            drawText("30 FPS", defaultMargin, (toolbarHeight + debugBounds.height()) / 2, debugPaint)
+            val text = "${BuildConfig.FLAVOR.toUpperCase()} FPS"
+            drawText(text, defaultMargin, (toolbarHeight + debugBounds.height()) / 2, debugPaint)
         }
     }
 
@@ -128,6 +129,12 @@ open class BaseSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope
 
     override fun onSingleTapUp(e: MotionEvent) = false
 
+    override fun onSingleTapConfirmed(e: MotionEvent) = false
+
+    override fun onDoubleTap(e: MotionEvent) = false
+
+    override fun onDoubleTapEvent(e: MotionEvent) = false
+
     override fun onScroll(e1: MotionEvent, e2: MotionEvent, distanceX: Float, distanceY: Float) = false
 
     override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float) = false
@@ -135,12 +142,6 @@ open class BaseSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope
     override fun onShowPress(e: MotionEvent) {}
 
     override fun onLongPress(e: MotionEvent) {}
-
-    override fun onDoubleTap(e: MotionEvent) = false
-
-    override fun onDoubleTapEvent(e: MotionEvent) = false
-
-    override fun onSingleTapConfirmed(e: MotionEvent) = false
 
     override fun onDetachedFromWindow() {
         holder.removeCallback(this)

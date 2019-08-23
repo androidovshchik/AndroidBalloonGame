@@ -5,6 +5,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
+    //noinspection GradleCompatible
     compileSdkVersion 28
     defaultConfig {
         minSdkVersion 17
@@ -14,7 +15,7 @@ android {
     }
     externalNativeBuild {
         cmake {
-            path "src/skia/cpp/CMakeLists.txt"
+            path "src/main/cpp/CMakeLists.txt"
             version "3.10.2"
         }
     }
@@ -28,12 +29,8 @@ android {
     }
     flavorDimensions "default"
     productFlavors {
-        canvas {
-            resValue "string", "app_name", "CanvasBalloonGame"
-        }
-        skia {
-            resValue "string", "app_name", "SkiaBalloonGame"
-        }
+        canvas
+        skia
     }
     buildTypes {
         release {

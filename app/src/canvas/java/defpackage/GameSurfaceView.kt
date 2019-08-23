@@ -11,13 +11,7 @@ import android.view.MotionEvent
 @Suppress("MemberVisibilityCanBePrivate")
 class GameSurfaceView : BaseSurfaceView {
 
-    private val ballSet = arrayListOf<BallSet>(
-        BallSet(),
-        BallSet(),
-        BallSet(),
-        BallSet(),
-        BallSet()
-    )
+    private val streamManager = StreamManager(context)
 
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
 
@@ -41,18 +35,16 @@ class GameSurfaceView : BaseSurfaceView {
 
     override fun onDraw(canvas: Canvas) = canvas.run {
         super.onDraw(this)
-        drawBitmap()
+        streamManager.onDraw(canvas, paint)
     }
 
     override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+        streamManager.onSingleTap(e)
         return super.onSingleTapConfirmed(e)
     }
 
     override fun onDetachedFromWindow() {
-        ballSet.forEach {
-            it.release()
-        }
-        ballSet.clear()
+        streamManager.release()
         super.onDetachedFromWindow()
     }
 }
