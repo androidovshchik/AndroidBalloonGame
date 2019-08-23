@@ -26,13 +26,13 @@ open class BaseSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope
     var isRunning = AtomicBoolean(false)
         private set
 
+    protected val defaultMargin = dip(16).toFloat()
+
     private val detector = GestureDetector(context, this)
 
-    protected val m16 = dip(16).toFloat()
+    /** DEBUG PROPERTIES **/
 
-    /**
-     * Only debug properties
-     */
+    private val toolbarHeight = dip(56).toFloat()
 
     private val debugPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         textSize = sp(16).toFloat()
@@ -43,7 +43,7 @@ open class BaseSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope
         debugPaint.getTextBounds("0", 0, 1, this)
     }
 
-    private val toolbarHeight = dip(56).toFloat()
+    /** DEBUG PROPERTIES **/
 
     @JvmOverloads
     constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : super(
@@ -105,7 +105,7 @@ open class BaseSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope
             debugPaint.color = 0x56000000
             drawRect(0f, 0f, width.toFloat(), toolbarHeight, debugPaint)
             debugPaint.color = Color.WHITE
-            drawText("30 FPS", m16, (toolbarHeight + debugBounds.height()) / 2, debugPaint)
+            drawText("30 FPS", defaultMargin, (toolbarHeight + debugBounds.height()) / 2, debugPaint)
         }
     }
 
