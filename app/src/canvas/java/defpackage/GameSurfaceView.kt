@@ -3,7 +3,6 @@ package defpackage
 import android.annotation.TargetApi
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import android.os.Build
 import android.util.AttributeSet
@@ -13,9 +12,7 @@ import android.view.MotionEvent
 class GameSurfaceView : BaseSurfaceView {
 
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        isFakeBoldText = true
-        color = Color.WHITE
-        textSize = 30f
+
     }
 
     @JvmOverloads
@@ -39,8 +36,7 @@ class GameSurfaceView : BaseSurfaceView {
 
     }
 
-    override fun onDown(e: MotionEvent): Boolean {
-
-        return super.onDown(e)
+    override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+        return super.onSingleTapConfirmed(e)
     }
 }

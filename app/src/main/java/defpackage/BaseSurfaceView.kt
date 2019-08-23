@@ -20,7 +20,8 @@ import org.jetbrains.anko.sp
 import java.util.concurrent.atomic.AtomicBoolean
 
 @Suppress("MemberVisibilityCanBePrivate", "LeakingThis")
-open class BaseSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope, GestureDetector.OnGestureListener {
+open class BaseSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope, GestureDetector.OnGestureListener,
+    GestureDetector.OnDoubleTapListener {
 
     var isRunning = AtomicBoolean(false)
         private set
@@ -111,17 +112,23 @@ open class BaseSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope
         return detector.onTouchEvent(event)
     }
 
-    override fun onDown(e: MotionEvent) = true
+    override fun onDown(e: MotionEvent) = false
 
-    override fun onSingleTapUp(e: MotionEvent) = true
+    override fun onSingleTapUp(e: MotionEvent) = false
 
-    override fun onScroll(e1: MotionEvent, e2: MotionEvent, distanceX: Float, distanceY: Float) = true
+    override fun onScroll(e1: MotionEvent, e2: MotionEvent, distanceX: Float, distanceY: Float) = false
 
-    override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float) = true
+    override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float) = false
 
     override fun onShowPress(e: MotionEvent) {}
 
     override fun onLongPress(e: MotionEvent) {}
+
+    override fun onDoubleTap(e: MotionEvent) = false
+
+    override fun onDoubleTapEvent(e: MotionEvent) = false
+
+    override fun onSingleTapConfirmed(e: MotionEvent) = false
 
     override fun onDetachedFromWindow() {
         holder.removeCallback(this)
