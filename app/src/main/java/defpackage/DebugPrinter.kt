@@ -2,8 +2,10 @@ package defpackage
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
+import androidovshchik.jerrygame.BuildConfig
 
 @Suppress("MemberVisibilityCanBePrivate")
 class DebugPrinter(context: Context) : GameLifecycle {
@@ -22,7 +24,13 @@ class DebugPrinter(context: Context) : GameLifecycle {
     }
 
     override fun onRender(output: Bitmap?) {
-
+        if (BuildConfig.DEBUG) {
+            val text = "${BuildConfig.FLAVOR.toUpperCase()} FPS"
+            debugPaint.color = 0x56000000
+            drawRect(0f, 0f, width.toFloat(), toolbarHeight, debugPaint)
+            debugPaint.color = Color.WHITE
+            drawText(text, startMargin, (toolbarHeight + textBounds.height()) / 2, debugPaint)
+        }
     }
 
     override fun onSingleTap(x: Float, y: Float) {

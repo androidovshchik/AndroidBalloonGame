@@ -10,43 +10,25 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
-import androidovshchik.jerrygame.BuildConfig
 import kotlinx.coroutines.*
-import org.jetbrains.anko.dip
-import org.jetbrains.anko.sp
 import java.util.concurrent.atomic.AtomicBoolean
 
 @Suppress("MemberVisibilityCanBePrivate", "LeakingThis")
-abstract class BaseSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope, GestureDetector.OnGestureListener,
+class GameSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope, GestureDetector.OnGestureListener,
     GestureDetector.OnDoubleTapListener {
 
     var isRunning = AtomicBoolean(false)
         private set
 
-    protected abstract val manager: GameLifecycle
+    private val manager = GameManager(context)
+
+    private val printer = DebugPrinter(context)
+
+    private val detector = GestureDetector(context, this)
 
     private val job = Job()
 
     private var output: Bitmap? = null
-
-    private val detector = GestureDetector(context, this)
-
-    /** DEBUG PROPERTIES **/
-
-    private val toolbarHeight = dip(56).toFloat()
-
-    private val startMargin = dip(16).toFloat()
-
-    private val debugPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        textSize = sp(16).toFloat()
-        isFakeBoldText = true
-    }
-
-    private val textBounds = Rect().apply {
-        debugPaint.getTextBounds("0", 0, 1, this)
-    }
-
-    /** DEBUG PROPERTIES **/
 
     @JvmOverloads
     constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : super(
@@ -70,7 +52,7 @@ abstract class BaseSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineS
         holder.apply {
             // todo without below
             setFormat(PixelFormat.TRANSPARENT)
-            addCallback(this@BaseSurfaceView)
+            addCallback(this@GameSurfaceView)
         }
     }
 
@@ -80,40 +62,38 @@ abstract class BaseSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineS
 
     @SuppressLint("WrongCall")
     fun start(): Boolean {
-        job.children.count()
-        if (isRunning.compareAndSet(false, true)) {
-            launch {
-                while (isRunning.get()) {
-                    holder.apply {
-                        lockCanvas(null)?.let {
-                            onDraw(it)
-                            onPostDraw(it)
-                            unlockCanvasAndPost(it)
-                        }
+        if (job.children.count { it.isActive } > 0) {
+            return false
+        }
+        if (!isRunning.compareAndSet(false, true)) {
+            return false
+        }
+        launch {
+            while (isRunning.get()) {
+                holder.apply {
+                    lockCanvas(null)?.let {
+                        onDraw(it)
+                        onPostDraw(it)
+                        unlockCanvasAndPost(it)
                     }
                 }
-                cancel()
             }
+            cancel()
         }
+        return true
     }
 
     override fun onDraw(canvas: Canvas) {
-        canvas.run {
-            drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
-            output?.let {
-                manager.onRender(it)
-                drawBitmap(it, 0f, 0f, null)
-            }
+        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
+        output?.let {
+            manager.onRender(it)
+            printer.onRender(it)
         }
     }
 
-    protected open fun onPostDraw(canvas: Canvas) = canvas.run {
-        if (BuildConfig.DEBUG) {
-            val text = "${BuildConfig.FLAVOR.toUpperCase()} FPS"
-            debugPaint.color = 0x56000000
-            drawRect(0f, 0f, width.toFloat(), toolbarHeight, debugPaint)
-            debugPaint.color = Color.WHITE
-            drawText(text, startMargin, (toolbarHeight + textBounds.height()) / 2, debugPaint)
+    private fun onPostDraw(canvas: Canvas) {
+        output?.let {
+            canvas.drawBitmap(it, 0f, 0f, null)
         }
     }
 
@@ -166,7 +146,7 @@ abstract class BaseSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineS
 
     override fun onLongPress(e: MotionEvent) {}
 
-    open fun release() {
+    fun release() {
         reset()
         manager.onDestroy()
         holder.removeCallback(this)
