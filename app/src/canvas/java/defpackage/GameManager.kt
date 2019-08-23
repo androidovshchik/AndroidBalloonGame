@@ -5,7 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.Paint
 
 @Suppress("MemberVisibilityCanBePrivate")
-class GameManager(context: Context) : GameLifecycle {
+class GameManager(context: Context) : BaseManager(context) {
 
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
 
@@ -19,7 +19,7 @@ class GameManager(context: Context) : GameLifecycle {
         BallSet()
     )
 
-    override fun onRender(output: Bitmap?) {
+    override fun onRender(output: Bitmap) {
 
     }
 

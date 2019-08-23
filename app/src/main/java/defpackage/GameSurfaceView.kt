@@ -26,7 +26,7 @@ class GameSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope, Ges
 
     private val detector = GestureDetector(context, this)
 
-    private val job = Job()
+    private var job: Job? = null
 
     private var output: Bitmap? = null
 
@@ -62,13 +62,13 @@ class GameSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope, Ges
 
     @SuppressLint("WrongCall")
     fun start(): Boolean {
-        if (job.children.count { it.isActive } > 0) {
+        if (job?.isActive == true) {
             return false
         }
         if (!isRunning.compareAndSet(false, true)) {
             return false
         }
-        launch {
+        job = launch {
             while (isRunning.get()) {
                 holder.apply {
                     lockCanvas(null)?.let {
@@ -152,5 +152,5 @@ class GameSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope, Ges
         holder.removeCallback(this)
     }
 
-    override val coroutineContext = Dispatchers.Default + job
+    override val coroutineContext = Dispatchers.Default
 }
