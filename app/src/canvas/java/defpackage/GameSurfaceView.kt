@@ -7,7 +7,6 @@ import android.graphics.Paint
 import android.os.Build
 import android.util.AttributeSet
 import android.view.MotionEvent
-import defpackage.game.BallSet
 
 @Suppress("MemberVisibilityCanBePrivate")
 class GameSurfaceView : BaseSurfaceView {

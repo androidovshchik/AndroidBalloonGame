@@ -12,7 +12,7 @@ class MainApp : Application() {
         Timber.plant(Timber.DebugTree())
     }
 
-    external fun cdraw(image: Bitmap)
+    external fun drawSkia(output: Bitmap)
 
     @Suppress("ConstantConditionIf")
     companion object {
