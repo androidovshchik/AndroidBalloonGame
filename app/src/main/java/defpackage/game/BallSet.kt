@@ -17,9 +17,40 @@ class BallSet(context: Context, val name: String) {
         it.resources.openRawResource(id)
     }
 
+    private val ballSet = arrayListOf(
+        BallSet(),
+        BallSet(),
+        BallSet(),
+        BallSet(),
+        BallSet()
+    )
+
+    init {
+        context.resources.run {
+            openRawResource(getIdentifier(name, "raw", context.packageName))
+                .bufferedReader()
+                .use {
+                    var i = 0
+                    while (true) {
+                        val line = readLine() ?: break
+                        if (BallRect.PATTERN.matches(line)) {
+                            val field = javaClass.getField("foo")
+                            field.set(this@BallRect, line.split(":")[1])
+                        }
+                    }
+                }
+        }
+    }
+
     fun release() {
         if (!bitmap.isRecycled) {
             bitmap.recycle()
         }
+    }
+
+    companion object {
+
+        @JvmStatic
+        val PATTERN = "(x|y|width|height): ".toRegex()
     }
 }

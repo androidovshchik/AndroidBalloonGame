@@ -1,22 +1,20 @@
+@file:Suppress("unused")
+
 package defpackage.game
 
-import android.content.Context
 import android.graphics.Rect
 
+fun BallRect.toCanvasRect() = Rect(x, y, x + width, y + height)
+
 @Suppress("MemberVisibilityCanBePrivate")
-class BallRect(context: Context, val name: String) {
+class BallRect(
+    val index: Int,
+    val x: Int,
+    val y: Int,
+    val width: Int,
+    val height: Int
+) {
 
-    var x: Int = 0
-    var y: Int = 149
-    var width: Int = 233
-    var height: Int = 252
-
-    var paddingLeft: Int = 59
-    var paddingRight: Int = 58
-    var paddingTop: Int = 46
-    var paddingBottom: Int = 52
-
-    var isPop = true
+    val isPop
+        get() = index in 7..10
 }
-
-fun BallRect.toCanvasRect() = Rect()

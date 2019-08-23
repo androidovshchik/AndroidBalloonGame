@@ -12,7 +12,13 @@ import defpackage.game.BallSet
 @Suppress("MemberVisibilityCanBePrivate")
 class GameSurfaceView : BaseSurfaceView {
 
-    private val balls = arrayListOf<BallSet>()
+    private val ballSet = arrayListOf<BallSet>(
+        BallSet(),
+        BallSet(),
+        BallSet(),
+        BallSet(),
+        BallSet()
+    )
 
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
 
@@ -41,5 +47,13 @@ class GameSurfaceView : BaseSurfaceView {
 
     override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
         return super.onSingleTapConfirmed(e)
+    }
+
+    override fun onDetachedFromWindow() {
+        ballSet.forEach {
+            it.release()
+        }
+        ballSet.clear()
+        super.onDetachedFromWindow()
     }
 }
