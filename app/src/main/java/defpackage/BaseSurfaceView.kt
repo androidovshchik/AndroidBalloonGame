@@ -51,10 +51,8 @@ class KSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope {
         if (isRunning.compareAndSet(false, true)) {
             launch {
                 while (isRunning.get()) {
-                    holder.use {
-                        synchronized(holder) {
-                            onDraw(it)
-                        }
+                    holder.lock {
+                        onDraw(it)
                     }
                 }
                 cancel()
@@ -79,11 +77,13 @@ class KSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope {
     override val coroutineContext = Dispatchers.Default
 }
 
-inline fun <T : SurfaceHolder> T.use(crossinline block: (Canvas) -> Unit) {
+inline fun <T : SurfaceHolder> T.lock(crossinline block: (Canvas) -> Unit) {
     var canvas: Canvas? = null
     try {
         canvas = lockCanvas(null)?.also {
-            block(it)
+            synchronized(this) {
+                block(it)
+            }
         }
     } finally {
         canvas?.let {
