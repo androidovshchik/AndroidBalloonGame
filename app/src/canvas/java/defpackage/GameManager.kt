@@ -19,7 +19,7 @@ class GameManager(context: Context) : GameLifecycle {
         BallSet()
     )
 
-    override fun onDraw(output: Bitmap?) = canvas.run {
+    override fun onRender(output: Bitmap?) {
 
     }
 
