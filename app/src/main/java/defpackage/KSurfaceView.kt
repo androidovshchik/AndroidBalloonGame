@@ -11,13 +11,11 @@ import android.view.SurfaceHolder
 import android.view.SurfaceView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicBoolean
 
 class KSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope {
-
-    private val job = Job()
 
     @Volatile
     var isRunning = AtomicBoolean(false)
@@ -48,16 +46,19 @@ class KSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope {
         isRunning.set(true)
         launch {
             while (isRunning.get()) {
-                holder.lockCanvas(null)?.let {
-                    try {
-                        synchronized(holder) {
-                            onDraw(it)
+                holder.run {
+                    lockCanvas(null)?.let {
+                        try {
+                            synchronized(this) {
+                                onDraw(it)
+                            }
+                        } finally {
+                            unlockCanvasAndPost(it)
                         }
-                    } finally {
-                        holder.unlockCanvasAndPost(it)
                     }
                 }
             }
+            cancel()
         }
     }
 
@@ -68,8 +69,8 @@ class KSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope {
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {}
 
     override fun surfaceDestroyed(holder: SurfaceHolder) {
-        job.cancel()
+        isRunning.set(false)
     }
 
-    override val coroutineContext = Dispatchers.Default + job
+    override val coroutineContext = Dispatchers.Default
 }
