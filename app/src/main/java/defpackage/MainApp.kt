@@ -1,6 +1,7 @@
 package defpackage
 
 import android.app.Application
+import androidovshchik.jerrygame.BuildConfig
 import timber.log.Timber
 
 class MainApp : Application() {
@@ -14,11 +15,14 @@ class MainApp : Application() {
 
     //external fun cdraw(image: Bitmap)
 
+    @Suppress("ConstantConditionIf")
     companion object {
 
         init {
-            System.loadLibrary("viewer")
-            System.loadLibrary("main")
+            if (BuildConfig.FLAVOR == "skia") {
+                System.loadLibrary("viewer")
+                System.loadLibrary("main")
+            }
         }
     }
 }

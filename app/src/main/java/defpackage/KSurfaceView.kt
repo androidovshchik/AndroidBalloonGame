@@ -15,10 +15,11 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicBoolean
 
+@Suppress("MemberVisibilityCanBePrivate")
 class KSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope {
 
-    @Volatile
     var isRunning = AtomicBoolean(false)
+        private set
 
     @JvmOverloads
     constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : super(
@@ -41,18 +42,28 @@ class KSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope {
         holder.addCallback(this)
     }
 
-    @SuppressLint("WrongCall")
     override fun surfaceCreated(holder: SurfaceHolder) {
-        isRunning.set(true)
+        start()
+    }
+
+    @SuppressLint("WrongCall")
+    fun start() {
+        if (!isRunning.compareAndSet(false, true)) {
+            return
+        }
         launch {
             while (isRunning.get()) {
                 holder.run {
-                    lockCanvas(null)?.let {
-                        try {
+                    var canvas: Canvas? = null
+                    try {
+                        canvas = lockCanvas(null)
+                        canvas?.let {
                             synchronized(this) {
                                 onDraw(it)
                             }
-                        } finally {
+                        }
+                    } finally {
+                        canvas?.let {
                             unlockCanvasAndPost(it)
                         }
                     }
@@ -69,6 +80,10 @@ class KSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope {
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {}
 
     override fun surfaceDestroyed(holder: SurfaceHolder) {
+        stop()
+    }
+
+    fun stop() {
         isRunning.set(false)
     }
 
