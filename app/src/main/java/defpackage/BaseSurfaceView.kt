@@ -3,10 +3,7 @@ package defpackage
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.PixelFormat
+import android.graphics.*
 import android.os.Build
 import android.util.AttributeSet
 import android.view.GestureDetector
@@ -18,6 +15,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import org.jetbrains.anko.dip
+import org.jetbrains.anko.sp
 import java.util.concurrent.atomic.AtomicBoolean
 
 @Suppress("MemberVisibilityCanBePrivate", "LeakingThis")
@@ -29,9 +28,8 @@ open class BaseSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope
     private val detector = GestureDetector(context, this)
 
     private val debugPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        textSize = context.sp(16).toFloat()
         isFakeBoldText = true
-        color = Color.WHITE
-        textSize = 30f
     }
 
     @JvmOverloads
@@ -75,6 +73,7 @@ open class BaseSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope
                     holder.apply {
                         lockCanvas(null)?.let {
                             onDraw(it)
+                            onPostDraw(it)
                             unlockCanvasAndPost(it)
                         }
                     }
@@ -84,9 +83,16 @@ open class BaseSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope
         }
     }
 
-    override fun onDraw(canvas: Canvas) {
+    override fun onDraw(canvas: Canvas) = canvas.run {
+        drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
+    }
+
+    protected open fun onPostDraw(canvas: Canvas) = canvas.run {
         if (BuildConfig.DEBUG) {
-            canvas.drawText("30 FPS", 100f, 100f, debugPaint)
+            debugPaint.color = 0x56000000
+            drawRect(0f, 0f, dip(100).toFloat(), dip(100).toFloat(), debugPaint)
+            debugPaint.color = Color.WHITE
+            drawText("30 FPS", 100f, 100f, debugPaint)
         }
     }
 

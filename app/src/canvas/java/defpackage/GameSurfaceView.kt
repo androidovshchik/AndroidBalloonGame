@@ -34,9 +34,9 @@ class GameSurfaceView : BaseSurfaceView {
         defStyleRes
     )
 
-    override fun onDraw(canvas: Canvas) {
+    override fun onDraw(canvas: Canvas) = canvas.run {
+        super.onDraw(this)
 
-        super.onDraw(canvas)
     }
 
     override fun onDown(e: MotionEvent): Boolean {
