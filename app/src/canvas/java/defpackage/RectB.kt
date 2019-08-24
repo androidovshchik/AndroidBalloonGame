@@ -13,7 +13,7 @@ fun ArrayList<RectB>.applyLast(value: Int): Boolean {
             top == Int.MIN_VALUE -> top = value
             right == Int.MIN_VALUE -> right = left + value
             bottom == Int.MIN_VALUE -> bottom = top + value
-            else -> return false
+            else -> return append(value)
         }
         return true
     }
@@ -51,6 +51,10 @@ class RectB {
             top -= amount
             bottom -= amount
         }
+    }
+
+    fun changeSize(newSize: RectB) {
+
     }
 
     fun hasPoint(x: Float, y: Float) = rect.contains(x.toInt(), y.toInt())

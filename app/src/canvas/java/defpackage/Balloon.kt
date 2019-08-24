@@ -3,31 +3,34 @@ package defpackage
 import android.graphics.Point
 import java.util.*
 
-fun LinkedList<Balloon>.append(window: Point) {
+fun LinkedList<Balloon>.append(space: Point) {
     val id = lastOrNull()?.id ?: 0L
-    add(Balloon(id + 1, window))
+    add(Balloon(id + 1, space))
 }
 
-class Balloon(val id: Long, window: Point) {
+class Balloon(val id: Long, space: Point) {
 
-    val textureIndex = TEXTURE_RANGE.random()
+    val textureIndex = TEXTURES_RANGE.random()
 
-    val partIndex = NORMAL_RANGE.random()
+    private val startPartIndex = PARTS_RANGE.random()
 
-    val position = RectB((0..window.x).random() - MAX_WIDTH / 2, window.y)
+    fun getPartIndex(time: Long): Int {
+        if (tappedAt == 0L || time - tappedAt < BURST_TIME) {
+            return startPartIndex
+        }
+    }
+
+    val position = RectB((0..space.x).random() - MAX_WIDTH / 2, space.y)
 
     var tappedAt = 0L
 
-    val isExisting
-        get() = tappedAt == 0L || System.currentTimeMillis() - tappedAt < BURST_TIME
-
     companion object {
 
-        val TEXTURE_RANGE = 0..4
+        val TEXTURES_RANGE = 0..4
 
-        val NORMAL_RANGE = 0..6
+        val PARTS_RANGE = 0..6
 
-        val POP_RANGE = 0..6
+        val POP_PARTS_RANGE = 7..10
 
         const val MAX_WIDTH = 190
 

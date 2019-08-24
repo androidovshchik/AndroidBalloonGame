@@ -4,6 +4,8 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'android-soexcluder'
+
 android {
     //noinspection GradleCompatible
     compileSdkVersion 28
@@ -46,6 +48,12 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+soexcluder {
+    canvas {
+        exclude "**/*"
     }
 }
 

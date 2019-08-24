@@ -7,7 +7,7 @@ import org.jetbrains.anko.collections.forEachReversedByIndex
 import java.util.*
 
 @Suppress("MemberVisibilityCanBePrivate")
-class GameManager(context: Context) : BaseManager(context) {
+class StreamController(context: Context) : BaseManager(context) {
 
     private val canvas = Canvas()
 

@@ -10,7 +10,9 @@ class TexturePack(val bitmap: Bitmap) {
 
     fun drawBalloon(canvas: Canvas, balloon: Balloon) = balloon.run {
         if (!bitmap.isRecycled) {
-            canvas.drawBitmap(bitmap, parts[partIndex].rect, position.rect, null)
+            parts.getOrNull(partIndex)?.let {
+                canvas.drawBitmap(bitmap, it.rect, position.rect, null)
+            }
         }
     }
 
