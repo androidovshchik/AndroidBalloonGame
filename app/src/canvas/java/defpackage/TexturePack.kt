@@ -8,7 +8,7 @@ class TexturePack(val index: Int, val bitmap: Bitmap) {
 
     val parts = arrayListOf<RectB>()
 
-    fun drawBalloon(canvas: Canvas, index: Int, position: RectB) {
+    fun drawBalloon(canvas: Canvas, balloon: Balloon) {
         if (!bitmap.isRecycled) {
             canvas.drawBitmap(bitmap, parts[index].rect, position.rect, null)
             val rect = textureB[textureIndex].packs[packIndex].rect

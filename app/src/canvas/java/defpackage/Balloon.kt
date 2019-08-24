@@ -18,8 +18,13 @@ class Balloon(val id: Long, window: Point) {
 
     var tappedAt = 0L
 
+    val isExisting
+        get() = tappedAt == 0L || System.currentTimeMillis() - tappedAt < BURST_TIME
+
     companion object {
 
         const val MAX_WIDTH = 190
+
+        const val BURST_TIME = 200
     }
 }
