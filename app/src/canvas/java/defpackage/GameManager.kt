@@ -3,6 +3,8 @@ package defpackage
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.PorterDuff
 import org.jetbrains.anko.collections.forEachReversedByIndex
 import java.util.*
 
@@ -50,6 +52,7 @@ class GameManager(context: Context) : BaseManager(context) {
         if (output.isRecycled) {
             return
         }
+        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
         canvas.setBitmap(output)
         synchronized(this) {
             renderedAt = System.currentTimeMillis()

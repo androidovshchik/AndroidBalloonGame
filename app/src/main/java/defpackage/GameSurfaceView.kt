@@ -3,7 +3,8 @@ package defpackage
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.content.Context
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.os.Build
 import android.util.AttributeSet
 import android.view.GestureDetector
@@ -21,8 +22,6 @@ class GameSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope, Ges
         private set
 
     private val manager = GameManager(context)
-
-    private val printer = InfoPrinter(context)
 
     private val detector = GestureDetector(context, this)
 
@@ -48,12 +47,7 @@ class GameSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope, Ges
 
     init {
         isFocusable = true
-        setZOrderOnTop(true)
-        holder.apply {
-            // todo without below
-            setFormat(PixelFormat.TRANSPARENT)
-            addCallback(this@GameSurfaceView)
-        }
+        holder.addCallback(this)
     }
 
     override fun surfaceCreated(holder: SurfaceHolder) {
@@ -87,10 +81,8 @@ class GameSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope, Ges
     }
 
     override fun onDraw(canvas: Canvas) {
-        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
         output?.let {
             manager.onRender(it)
-            printer.onRender(it)
         }
     }
 

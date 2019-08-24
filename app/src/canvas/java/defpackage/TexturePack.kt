@@ -12,8 +12,8 @@ class TexturePack(val bitmap: Bitmap) {
      * @return if false then balloon will be removed
      */
     fun drawBalloon(canvas: Canvas, time: Long, balloon: Balloon): Boolean {
-        balloon.run {
-            if (!bitmap.isRecycled) {
+        if (!bitmap.isRecycled) {
+            balloon.run {
                 parts.getOrNull(getPartIndex(time))?.let {
                     if (!position.hasSize) {
                         position.changeSize(it.rect)

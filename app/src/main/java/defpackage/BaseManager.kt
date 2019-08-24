@@ -3,8 +3,7 @@ package defpackage
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Point
-import org.jetbrains.anko.windowManager
+import androidx.core.content.ContextCompat
 import java.io.BufferedReader
 import java.lang.ref.WeakReference
 
@@ -19,12 +18,10 @@ abstract class BaseManager(context: Context) {
 
     abstract fun onDestroy()
 
-    val windowSize: Point?
-        get() = reference.get()?.run {
-            val size = Point()
-            windowManager.defaultDisplay.getSize(size)
-            return size
-        }
+    fun readColor(name: String) = reference.get()?.run {
+        val id = resources.getIdentifier(name, "color", packageName)
+        ContextCompat.getColor(applicationContext, id)
+    }
 
     fun readBitmap(name: String) = reference.get()?.run {
         val id = resources.getIdentifier(name, "drawable", packageName)
