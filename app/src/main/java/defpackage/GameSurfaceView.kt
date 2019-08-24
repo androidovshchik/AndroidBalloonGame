@@ -60,20 +60,19 @@ class GameSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope, Ges
 
     @SuppressLint("WrongCall")
     fun start(): Boolean {
-        disposable?.dispose()
-        if (!isRunning.get()) {
-            job?.apply {
-                if (isActive) {
-                    disposable = invokeOnCompletion {
-                        start()
-                    }
-                    return true
-                }
-            }
-        }
-        if (!isRunning.compareAndSet(false, true)) {
+        if (isRunning.get()) {
             return false
         }
+        disposable?.dispose()
+        job?.apply {
+            if (isActive) {
+                disposable = invokeOnCompletion {
+                    start()
+                }
+                return true
+            }
+        }
+        isRunning.set(true)
         job = launch {
             while (isRunning.get()) {
                 holder.apply {

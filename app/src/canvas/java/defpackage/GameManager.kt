@@ -5,8 +5,6 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.PorterDuff
-import defpackage.models.Balloon
-import defpackage.models.applyLast
 import org.jetbrains.anko.collections.forEachReversedByIndex
 import java.util.*
 
@@ -80,10 +78,11 @@ class GameManager(context: Context) : BaseManager() {
             if (!it.hasBeenTapped) {
                 if (it.position.hasPoint(x, y)) {
                     it.tappedAt = System.currentTimeMillis()
-                    return
+                    return true
                 }
             }
         }
+        return false
     }
 
     @Synchronized
