@@ -18,8 +18,11 @@ class Balloon(val id: Long, space: Point) {
 
     var tappedAt = 0L
 
+    val hasBeenTapped
+        get() = tappedAt > 0L
+
     fun getPartIndex(time: Long): Int {
-        if (tappedAt == 0L) {
+        if (!hasBeenTapped) {
             return initialPartIndex
         }
         val interval = time - tappedAt

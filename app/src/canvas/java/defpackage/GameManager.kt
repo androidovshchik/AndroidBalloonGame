@@ -15,6 +15,8 @@ class GameManager(context: Context) : BaseManager(context) {
 
     private val balloons = LinkedList<Balloon>()
 
+    var startedAt = 0L
+
     var renderedAt = 0L
 
     init {
@@ -26,13 +28,17 @@ class GameManager(context: Context) : BaseManager(context) {
             "yellow_balloon"
         ).forEach { name ->
             readBitmap(name)?.let { bitmap ->
-                textures.add(TexturePack(bitmap))
+                synchronized(this) {
+                    textures.add(TexturePack(bitmap))
+                }
                 readText(name)?.let { text ->
                     Scanner(text).use {
                         it.useDelimiter("\\s*fish\\s*")
                         while (it.hasNext()) {
                             val line = it.nextLine()
-                            textures.last().parts.applyLast(0)
+                            synchronized(this) {
+                                textures.last().parts.applyLast(0)
+                            }
                         }
                     }
                 }
@@ -45,21 +51,33 @@ class GameManager(context: Context) : BaseManager(context) {
             return
         }
         canvas.setBitmap(output)
-        balloons.forEach {
-            textures.getOrNull(it.textureIndex)?.run {
-                drawBalloon(canvas, 0L, it)
+        synchronized(this) {
+            renderedAt = System.currentTimeMillis()
+            val iterator = balloons.iterator()
+            while (iterator.hasNext()) {
+                val balloon = iterator.next()
+                textures.getOrNull(balloon.textureIndex)?.run {
+                    if (!drawBalloon(canvas, renderedAt, balloon)) {
+                        iterator.remove()
+                    }
+                } ?: iterator.remove()
             }
         }
     }
 
+    @Synchronized
     override fun onSingleTap(x: Float, y: Float) {
         balloons.forEachReversedByIndex {
-            if (it.position.hasPoint(x, y)) {
-                it.tappedAt = System.currentTimeMillis()
+            if (!it.hasBeenTapped) {
+                if (it.position.hasPoint(x, y)) {
+                    it.tappedAt = System.currentTimeMillis()
+                    return
+                }
             }
         }
     }
 
+    @Synchronized
     override fun onDestroy() {
         textures.forEach {
             it.release()

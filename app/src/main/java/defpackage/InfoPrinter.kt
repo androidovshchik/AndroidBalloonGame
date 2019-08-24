@@ -24,7 +24,7 @@ class InfoPrinter(context: Context) {
         debugPaint.getTextBounds("0", 0, 1, this)
     }
 
-    fun onRender(output: Bitmap?) {
+    fun onPrint(output: Bitmap?) {
         if (BuildConfig.DEBUG) {
             val text = "${BuildConfig.FLAVOR.toUpperCase()} FPS"
             debugPaint.color = 0x56000000

@@ -3,6 +3,7 @@
 package defpackage
 
 import android.graphics.Rect
+import kotlin.math.absoluteValue
 
 fun ArrayList<RectB>.append(x: Int) = add(RectB(x))
 
@@ -20,7 +21,6 @@ fun ArrayList<RectB>.applyLast(value: Int): Boolean {
     return append(value)
 }
 
-@Suppress("MemberVisibilityCanBePrivate")
 class RectB {
 
     val rect = Rect(Int.MIN_VALUE, Int.MIN_VALUE, Int.MIN_VALUE, Int.MIN_VALUE)
@@ -43,23 +43,40 @@ class RectB {
     val hasSize
         get() = rect.right != Int.MIN_VALUE && rect.bottom != Int.MIN_VALUE
 
-    val isOutOfBox
-        get() = rect.bottom <= 0
+    val isOutOfBox: Boolean
+        get() {
+            if (!hasSize) {
+                throw IllegalStateException("This method requires the size of rect must be set")
+            }
+            return rect.bottom <= 0
+        }
 
     fun moveY(amount: Int) {
+        if (hasSize) {
+            rect.apply {
+                top -= amount
+                bottom -= amount
+            }
+        }
+    }
+
+    fun changeSize(size: Rect) {
         rect.apply {
-            top -= amount
-            bottom -= amount
+            if (hasSize) {
+                val x = (size.width() - width()).absoluteValue / 2
+                val y = (size.width() - height()).absoluteValue / 2
+                set(left - x, top - y, right + x, bottom + y)
+            } else {
+                right = left + size.width()
+                bottom = top + size.height()
+            }
         }
     }
 
-    fun changeSize(newSize: Rect) {
-        if (!hasSize) {
-
-        } else {
-
+    fun hasPoint(x: Float, y: Float): Boolean {
+        if (hasSize) {
+            return rect.contains(x.toInt(), y.toInt())
         }
+        return false
     }
-
-    fun hasPoint(x: Float, y: Float) = rect.contains(x.toInt(), y.toInt())
 }
