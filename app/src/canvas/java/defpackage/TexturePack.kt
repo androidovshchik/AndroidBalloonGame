@@ -4,29 +4,14 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 
 @Suppress("MemberVisibilityCanBePrivate")
-class TexturePack(val index: Int, val bitmap: Bitmap) {
+class TexturePack(val bitmap: Bitmap) {
 
     val parts = arrayListOf<RectB>()
 
-    fun drawBalloon(canvas: Canvas, balloon: Balloon) {
+    fun drawBalloon(canvas: Canvas, balloon: Balloon) = balloon.run {
         if (!bitmap.isRecycled) {
-            canvas.drawBitmap(bitmap, parts[index].rect, position.rect, null)
-            val rect = textureB[textureIndex].packs[packIndex].rect
+            canvas.drawBitmap(bitmap, parts[partIndex].rect, position.rect, null)
         }
-    }
-
-    fun getRect(index: Int): RectB {
-        if (index !in 0..6) {
-            throw IndexOutOfBoundsException("Invalid index of pop rect")
-        }
-        return parts[index]
-    }
-
-    fun getPopRect(index: Int): RectB {
-        if (index !in 0..3) {
-            throw IndexOutOfBoundsException("Invalid index of pop rect")
-        }
-        return parts[index + 7]
     }
 
     fun release() {

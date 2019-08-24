@@ -10,9 +10,9 @@ fun LinkedList<Balloon>.append(window: Point) {
 
 class Balloon(val id: Long, window: Point) {
 
-    val textureIndex = (0..4).random()
+    val textureIndex = TEXTURE_RANGE.random()
 
-    val partIndex = (0..6).random()
+    val partIndex = NORMAL_RANGE.random()
 
     val position = RectB((0..window.x).random() - MAX_WIDTH / 2, window.y)
 
@@ -22,6 +22,12 @@ class Balloon(val id: Long, window: Point) {
         get() = tappedAt == 0L || System.currentTimeMillis() - tappedAt < BURST_TIME
 
     companion object {
+
+        val TEXTURE_RANGE = 0..4
+
+        val NORMAL_RANGE = 0..6
+
+        val POP_RANGE = 0..6
 
         const val MAX_WIDTH = 190
 

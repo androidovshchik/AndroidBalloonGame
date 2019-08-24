@@ -130,12 +130,12 @@ class GameSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope, Ges
 
     override fun onDown(e: MotionEvent) = false
 
-    override fun onSingleTapUp(e: MotionEvent) = false
-
-    override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+    override fun onSingleTapUp(e: MotionEvent): Boolean {
         manager.onSingleTap(e.x, e.y)
         return false
     }
+
+    override fun onSingleTapConfirmed(e: MotionEvent) = false
 
     override fun onDoubleTap(e: MotionEvent) = false
 
