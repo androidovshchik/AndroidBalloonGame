@@ -5,12 +5,10 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.core.content.ContextCompat
 import java.io.BufferedReader
-import java.lang.ref.WeakReference
 
-@Suppress("MemberVisibilityCanBePrivate", "unused")
-abstract class BaseManager(context: Context) {
+abstract class BaseManager {
 
-    var reference = WeakReference(context)
+    abstract fun onInit(context: Context)
 
     abstract fun onRender(output: Bitmap)
 
@@ -18,17 +16,17 @@ abstract class BaseManager(context: Context) {
 
     abstract fun onDestroy()
 
-    fun readColor(name: String) = reference.get()?.run {
+    fun readColor(context: Context, name: String) = context.run {
         val id = resources.getIdentifier(name, "color", packageName)
         ContextCompat.getColor(applicationContext, id)
     }
 
-    fun readBitmap(name: String) = reference.get()?.run {
+    fun readBitmap(context: Context, name: String): Bitmap = context.run {
         val id = resources.getIdentifier(name, "drawable", packageName)
         BitmapFactory.decodeResource(resources, id)
     }
 
-    fun readText(name: String) = reference.get()?.run {
+    fun readText(context: Context, name: String) = context.run {
         val id = resources.getIdentifier(name, "raw", packageName)
         resources.openRawResource(id)
             .bufferedReader()

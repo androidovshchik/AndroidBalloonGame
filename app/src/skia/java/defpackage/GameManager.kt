@@ -3,7 +3,9 @@ package defpackage
 import android.content.Context
 import android.graphics.Bitmap
 
-class GameManager(context: Context) : BaseManager(context) {
+class GameManager(context: Context) : BaseManager() {
+
+    external override fun onInit(context: Context)
 
     external override fun onRender(output: Bitmap)
 

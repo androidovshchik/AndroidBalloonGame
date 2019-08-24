@@ -9,7 +9,7 @@ import androidovshchik.jerrygame.BuildConfig
 import org.jetbrains.anko.dip
 import org.jetbrains.anko.sp
 
-class InfoPrinter(context: Context) {
+class DebugToolbar(context: Context) {
 
     private val toolbarHeight = context.dip(56).toFloat()
 
@@ -24,7 +24,7 @@ class InfoPrinter(context: Context) {
         debugPaint.getTextBounds("0", 0, 1, this)
     }
 
-    fun onPrint(output: Bitmap?) {
+    fun onDraw(output: Bitmap?) {
         if (BuildConfig.DEBUG) {
             val text = "${BuildConfig.FLAVOR.toUpperCase()} FPS"
             debugPaint.color = 0x56000000

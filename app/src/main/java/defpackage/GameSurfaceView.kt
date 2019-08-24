@@ -7,12 +7,15 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.os.Build
 import android.util.AttributeSet
-import android.view.GestureDetector
-import android.view.MotionEvent
-import android.view.SurfaceHolder
-import android.view.SurfaceView
+import android.view.*
 import kotlinx.coroutines.*
+import org.jetbrains.anko.custom.ankoView
 import java.util.concurrent.atomic.AtomicBoolean
+
+fun ViewManager.gameSurfaceView(theme: Int = 0) = gameSurfaceView(theme) {}
+
+inline fun ViewManager.gameSurfaceView(theme: Int = 0, init: GameSurfaceView.() -> Unit) =
+    ankoView({ GameSurfaceView(it) }, theme, init)
 
 @Suppress("MemberVisibilityCanBePrivate", "LeakingThis")
 class GameSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope, GestureDetector.OnGestureListener,
@@ -26,6 +29,8 @@ class GameSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope, Ges
     private val detector = GestureDetector(context, this)
 
     private var job: Job? = null
+
+    private var disposable: DisposableHandle? = null
 
     private var output: Bitmap? = null
 
@@ -56,8 +61,16 @@ class GameSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope, Ges
 
     @SuppressLint("WrongCall")
     fun start(): Boolean {
-        if (job?.isActive == true) {
-            return false
+        disposable?.dispose()
+        if (!isRunning.get()) {
+            job?.apply {
+                if (isActive) {
+                    disposable = invokeOnCompletion {
+                        start()
+                    }
+                    return true
+                }
+            }
         }
         if (!isRunning.compareAndSet(false, true)) {
             return false
@@ -66,16 +79,15 @@ class GameSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope, Ges
             while (isRunning.get()) {
                 holder.apply {
                     lockCanvas(null)?.let {
-                        onDraw(it)
-                        onPostDraw(it)
+                        synchronized(holder) {
+                            onDraw(it)
+                            onPostDraw(it)
+                        }
                         unlockCanvasAndPost(it)
                     }
                 }
             }
             cancel()
-        }
-        job?.invokeOnCompletion {
-
         }
         return true
     }

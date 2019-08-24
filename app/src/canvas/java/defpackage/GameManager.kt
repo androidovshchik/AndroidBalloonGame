@@ -9,7 +9,7 @@ import org.jetbrains.anko.collections.forEachReversedByIndex
 import java.util.*
 
 @Suppress("MemberVisibilityCanBePrivate")
-class GameManager(context: Context) : BaseManager(context) {
+class GameManager(context: Context) : BaseManager() {
 
     private val canvas = Canvas()
 
@@ -22,6 +22,10 @@ class GameManager(context: Context) : BaseManager(context) {
     var renderedAt = 0L
 
     init {
+        onInit(context)
+    }
+
+    override fun onInit(context: Context) {
         arrayOf(
             "blue_balloon",
             "green_balloon",
