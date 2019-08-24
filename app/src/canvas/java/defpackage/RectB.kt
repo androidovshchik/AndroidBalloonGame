@@ -4,9 +4,7 @@ package defpackage
 
 import android.graphics.Rect
 
-fun ArrayList<RectB>.append(x: Int) = add(RectB().apply {
-    rect.left = x
-})
+fun ArrayList<RectB>.append(x: Int) = add(RectB(x))
 
 fun ArrayList<RectB>.applyLast(value: Int): Boolean {
     lastOrNull()?.rect?.apply {
@@ -27,13 +25,25 @@ class RectB {
 
     val rect = Rect(Int.MIN_VALUE, Int.MIN_VALUE, Int.MIN_VALUE, Int.MIN_VALUE)
 
-    constructor()
+    constructor(x: Int) {
+        rect.left = x
+    }
+
+    constructor(x: Int, y: Int) {
+        rect.apply {
+            left = x
+            top = y
+        }
+    }
 
     constructor(x: Int, y: Int, width: Int, height: Int) {
         rect.set(x, y, x + width, y + height)
     }
 
-    val isOutOfScreen
+    val hasSize
+        get() = rect.right != Int.MIN_VALUE && rect.bottom != Int.MIN_VALUE
+
+    val isOutOfBox
         get() = rect.bottom <= 0
 
     fun moveY(amount: Int) {

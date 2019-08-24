@@ -1,20 +1,25 @@
 package defpackage
 
+import android.graphics.Point
 import java.util.*
 
-fun LinkedList<Balloon>.append(x: Int) {
-    add(Balloon().apply {
-        rect.left = x
-    })
+fun LinkedList<Balloon>.append(window: Point) {
+    val id = lastOrNull()?.id ?: 0L
+    add(Balloon(id + 1, window))
 }
 
-class Balloon(val id: Long, val position: RectB) {
+class Balloon(val id: Long, window: Point) {
 
-    val index = (0..4).random() * 10 + (0..6).random()
+    val textureIndex = (0..4).random()
 
-    val textureIndex
-        get() = index / 10
+    val partIndex = (0..6).random()
 
-    val rectIndex
-        get() = index % 10
+    val position = RectB((0..window.x).random() - MAX_WIDTH / 2, window.y)
+
+    var tappedAt = 0L
+
+    companion object {
+
+        const val MAX_WIDTH = 190
+    }
 }
