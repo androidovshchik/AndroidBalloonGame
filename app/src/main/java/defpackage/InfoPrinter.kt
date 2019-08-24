@@ -9,7 +9,7 @@ import androidovshchik.jerrygame.BuildConfig
 import org.jetbrains.anko.dip
 import org.jetbrains.anko.sp
 
-class DebugPrinter(context: Context) {
+class InfoPrinter(context: Context) {
 
     private val toolbarHeight = context.dip(56).toFloat()
 

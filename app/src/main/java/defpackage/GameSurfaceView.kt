@@ -22,7 +22,7 @@ class GameSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope, Ges
 
     private val manager = GameManager(context)
 
-    private val printer = DebugPrinter(context)
+    private val printer = InfoPrinter(context)
 
     private val detector = GestureDetector(context, this)
 
