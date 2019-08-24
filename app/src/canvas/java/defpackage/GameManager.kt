@@ -2,7 +2,12 @@ package defpackage
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Paint
+
+fun BallSet.drawBitmap(canvas: Canvas, index: Int) = canvas.run {
+    drawBitmap(bitmap, rects[index].toCanvasRect(), RectF(), null)
+}
 
 @Suppress("MemberVisibilityCanBePrivate")
 class GameManager(context: Context) : BaseManager(context) {
@@ -32,5 +37,11 @@ class GameManager(context: Context) : BaseManager(context) {
             it.release()
         }
         ballSet.clear()
+    }
+
+    companion object {
+
+        @JvmStatic
+        val PATTERN = "(x|y|width|height): ".toRegex()
     }
 }

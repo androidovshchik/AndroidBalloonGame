@@ -80,6 +80,9 @@ class GameSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope, Ges
             }
             cancel()
         }
+        job?.invokeOnCompletion {
+
+        }
         return true
     }
 

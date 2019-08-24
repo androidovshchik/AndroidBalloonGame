@@ -1,11 +1,20 @@
 package defpackage
 
-import android.graphics.Rect
+import java.util.*
 
-@Suppress("MemberVisibilityCanBePrivate")
-class Balloon(val id: Long, var zIndex: Int) {
+fun LinkedList<Balloon>.append(x: Int) {
+    add(Balloon().apply {
+        rect.left = x
+    })
+}
 
-    val position = Rect(x, y, x + width, y + height)
+class Balloon(val id: Long, val position: RectB) {
 
-    var isAlive = true
+    val index = (0..4).random() * 10 + (0..6).random()
+
+    val textureIndex
+        get() = index / 10
+
+    val rectIndex
+        get() = index % 10
 }
