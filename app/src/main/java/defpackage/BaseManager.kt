@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory
 import androidx.core.content.ContextCompat
 import java.io.BufferedReader
 
+@Suppress("unused")
 abstract class BaseManager {
 
     abstract fun onInit(context: Context)

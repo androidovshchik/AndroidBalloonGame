@@ -3,8 +3,7 @@ package defpackage
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.PorterDuff
+import android.graphics.Point
 import androidovshchik.jerrygame.BuildConfig
 import org.jetbrains.anko.collections.forEachReversedByIndex
 import java.util.*
@@ -19,6 +18,8 @@ class GameManager(context: Context) : BaseManager() {
     private val balloons = LinkedList<Balloon>()
 
     private val toolbar = Toolbar(context)
+
+    private val colorPrimary = readColor(context, "colorPrimary")
 
     var startedAt = 0L
 
@@ -59,14 +60,15 @@ class GameManager(context: Context) : BaseManager() {
         if (output.isRecycled) {
             return
         }
-        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
+        val window = Point(output.width, output.height)
         canvas.setBitmap(output)
+        canvas.drawColor(colorPrimary)
         synchronized(this) {
             renderedAt = System.currentTimeMillis()
             val iterator = balloons.iterator()
             while (iterator.hasNext()) {
                 val balloon = iterator.next()
-                textures.getOrNull(balloon.textureIndex)?.run {
+                textures.getOrNull(balloon.texture)?.run {
                     if (!drawBalloon(canvas, renderedAt, balloon)) {
                         iterator.remove()
                     }
@@ -74,7 +76,7 @@ class GameManager(context: Context) : BaseManager() {
             }
         }
         if (BuildConfig.DEBUG) {
-            toolbar.drawText(canvas)
+            toolbar.drawText(canvas, window, 0)
         }
     }
 
