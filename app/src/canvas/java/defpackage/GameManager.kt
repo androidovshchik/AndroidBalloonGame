@@ -52,7 +52,7 @@ class GameManager(context: Context) : BaseManager() {
         }
     }
 
-    override fun onRender(output: Bitmap) {
+    override fun onDraw(output: Bitmap) {
         if (output.isRecycled) {
             return
         }
@@ -73,7 +73,7 @@ class GameManager(context: Context) : BaseManager() {
     }
 
     @Synchronized
-    override fun onSingleTap(x: Float, y: Float) {
+    override fun onSingleTap(x: Float, y: Float): Boolean {
         balloons.forEachReversedByIndex {
             if (!it.hasBeenTapped) {
                 if (it.position.hasPoint(x, y)) {

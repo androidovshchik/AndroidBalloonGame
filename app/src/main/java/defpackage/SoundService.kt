@@ -22,7 +22,7 @@ inline fun <reified T : Service> ActivityManager.isRunning(): Boolean {
     return false
 }
 
-class MusicService : Service() {
+class SoundService : Service() {
 
     private lateinit var exoPlayer: SimpleExoPlayer
 
@@ -73,7 +73,7 @@ class MusicService : Service() {
     @Suppress("unused")
     inner class Binder : android.os.Binder() {
 
-        val service: MusicService
-            get() = this@MusicService
+        val service: SoundService
+            get() = this@SoundService
     }
 }

@@ -1,7 +1,9 @@
 package defpackage
 
+import android.app.Activity
 import android.content.ComponentName
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
@@ -11,26 +13,39 @@ import org.jetbrains.anko.frameLayout
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.matchParent
 
+tailrec fun Context.activity(): Activity? = when {
+    this is Activity -> this
+    else -> (this as? ContextWrapper)?.baseContext?.activity()
+}
+
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var view: GameSurfaceView
+    private lateinit var surfaceView: GameSurfaceView
 
-    private var service: MusicService? = null
+    private var service: SoundService? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         frameLayout {
             lparams(matchParent, matchParent)
-            view = gameSurfaceView().lparams(matchParent, matchParent)
+            surfaceView = gameSurfaceView().lparams(matchParent, matchParent)
         }
     }
 
     override fun onStart() {
         super.onStart()
-        if (!activityManager.isRunning<MusicService>()) {
-            startService(intentFor<MusicService>())
+        intentFor<SoundService>().let {
+            if (!activityManager.isRunning<SoundService>()) {
+                startService(it)
+            }
+            bindService(it, connection, Context.BIND_AUTO_CREATE)
         }
-        bindService(intentFor<MusicService>(), connection, Context.BIND_AUTO_CREATE)
+    }
+
+    fun playBalloonPop() {
+        if (!isFinishing) {
+            service?.playSound("balloon_pop")
+        }
     }
 
     override fun onStop() {
@@ -43,7 +58,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        view.release()
+        surfaceView.release()
         super.onDestroy()
     }
 
@@ -54,7 +69,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun onServiceConnected(name: ComponentName, binder: IBinder) {
-            service = (binder as MusicService.Binder).service
+            service = (binder as SoundService.Binder).service
         }
     }
 }

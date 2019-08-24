@@ -18,8 +18,7 @@ inline fun ViewManager.gameSurfaceView(theme: Int = 0, init: GameSurfaceView.() 
     ankoView({ GameSurfaceView(it) }, theme, init)
 
 @Suppress("MemberVisibilityCanBePrivate", "LeakingThis")
-class GameSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope, GestureDetector.OnGestureListener,
-    GestureDetector.OnDoubleTapListener {
+class GameSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope, GestureDetector.OnGestureListener {
 
     var isRunning = AtomicBoolean(false)
         private set
@@ -94,7 +93,7 @@ class GameSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope, Ges
 
     override fun onDraw(canvas: Canvas) {
         output?.let {
-            manager.onRender(it)
+            manager.onDraw(it)
         }
     }
 
@@ -124,6 +123,7 @@ class GameSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope, Ges
             if (!isRecycled) {
                 recycle()
             }
+            output = null
         }
     }
 
@@ -135,15 +135,15 @@ class GameSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope, Ges
     override fun onDown(e: MotionEvent) = false
 
     override fun onSingleTapUp(e: MotionEvent): Boolean {
-        manager.onSingleTap(e.x, e.y)
+        if (manager.onSingleTap(e.x, e.y)) {
+            context.activity()?.let {
+                if (it is MainActivity) {
+                    it.playBalloonPop()
+                }
+            }
+        }
         return false
     }
-
-    override fun onSingleTapConfirmed(e: MotionEvent) = false
-
-    override fun onDoubleTap(e: MotionEvent) = false
-
-    override fun onDoubleTapEvent(e: MotionEvent) = false
 
     override fun onScroll(e1: MotionEvent, e2: MotionEvent, distanceX: Float, distanceY: Float) = false
 

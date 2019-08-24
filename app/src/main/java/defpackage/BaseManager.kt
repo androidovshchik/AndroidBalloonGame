@@ -10,9 +10,9 @@ abstract class BaseManager {
 
     abstract fun onInit(context: Context)
 
-    abstract fun onRender(output: Bitmap)
+    abstract fun onDraw(output: Bitmap)
 
-    abstract fun onSingleTap(x: Float, y: Float)
+    abstract fun onSingleTap(x: Float, y: Float): Boolean
 
     abstract fun onDestroy()
 

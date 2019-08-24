@@ -19,7 +19,7 @@
             </intent-filter>
         </activity>
         <service
-            android:name="defpackage.MusicService">
+            android:name="defpackage.SoundService">
         </service>
     </application>
 
