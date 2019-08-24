@@ -8,12 +8,22 @@ class TexturePack(val bitmap: Bitmap) {
 
     val parts = arrayListOf<RectB>()
 
-    fun drawBalloon(canvas: Canvas, balloon: Balloon) = balloon.run {
-        if (!bitmap.isRecycled) {
-            parts.getOrNull(partIndex)?.let {
-                canvas.drawBitmap(bitmap, it.rect, position.rect, null)
+    /**
+     * @return if false then balloon will be removed
+     */
+    fun drawBalloon(canvas: Canvas, time: Long, balloon: Balloon): Boolean {
+        balloon.run {
+            if (!bitmap.isRecycled) {
+                parts.getOrNull(getPartIndex(time))?.let {
+                    if (!position.hasSize) {
+                        position.changeSize(it.rect)
+                    }
+                    canvas.drawBitmap(bitmap, it.rect, position.rect, null)
+                    return true
+                }
             }
         }
+        return false
     }
 
     fun release() {

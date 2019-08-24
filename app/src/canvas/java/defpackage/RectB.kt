@@ -53,8 +53,12 @@ class RectB {
         }
     }
 
-    fun changeSize(newSize: RectB) {
+    fun changeSize(newSize: Rect) {
+        if (!hasSize) {
 
+        } else {
+
+        }
     }
 
     fun hasPoint(x: Float, y: Float) = rect.contains(x.toInt(), y.toInt())

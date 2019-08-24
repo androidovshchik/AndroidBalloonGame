@@ -15,7 +15,7 @@ class GameManager(context: Context) : BaseManager(context) {
 
     private val balloons = LinkedList<Balloon>()
 
-    var lastRenderAt = 0L
+    var renderedAt = 0L
 
     init {
         arrayOf(
@@ -47,10 +47,7 @@ class GameManager(context: Context) : BaseManager(context) {
         canvas.setBitmap(output)
         balloons.forEach {
             textures.getOrNull(it.textureIndex)?.run {
-                if (!it.position.hasSize) {
-                    it.position
-                }
-                drawBalloon(canvas, it)
+                drawBalloon(canvas, 0L, it)
             }
         }
     }
