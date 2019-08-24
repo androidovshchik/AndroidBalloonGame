@@ -16,6 +16,10 @@ abstract class BaseManager {
 
     abstract fun onDestroy()
 
+    fun getDensity(context: Context) = context.resources.displayMetrics.density
+
+    fun getScaledDensity(context: Context) = context.resources.displayMetrics.scaledDensity
+
     fun readColor(context: Context, name: String) = context.run {
         val id = resources.getIdentifier(name, "color", packageName)
         ContextCompat.getColor(applicationContext, id)

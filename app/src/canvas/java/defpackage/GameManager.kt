@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.PorterDuff
+import androidovshchik.jerrygame.BuildConfig
 import org.jetbrains.anko.collections.forEachReversedByIndex
 import java.util.*
 
@@ -16,6 +17,8 @@ class GameManager(context: Context) : BaseManager() {
     private val textures = arrayListOf<TexturePack>()
 
     private val balloons = LinkedList<Balloon>()
+
+    private val toolbar = Toolbar(context)
 
     var startedAt = 0L
 
@@ -69,6 +72,9 @@ class GameManager(context: Context) : BaseManager() {
                     }
                 } ?: iterator.remove()
             }
+        }
+        if (BuildConfig.DEBUG) {
+            toolbar.drawText(canvas)
         }
     }
 
