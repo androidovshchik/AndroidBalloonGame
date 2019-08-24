@@ -22,6 +22,7 @@ inline fun <reified T : Service> ActivityManager.isRunning(): Boolean {
     return false
 }
 
+@Suppress("MemberVisibilityCanBePrivate")
 class SoundService : Service() {
 
     private lateinit var exoPlayer: SimpleExoPlayer
@@ -43,6 +44,7 @@ class SoundService : Service() {
     }
 
     override fun onUnbind(intent: Intent): Boolean {
+        stopPlay()
         return true
     }
 

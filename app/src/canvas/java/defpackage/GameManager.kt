@@ -5,6 +5,8 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.PorterDuff
+import defpackage.models.Balloon
+import defpackage.models.applyLast
 import org.jetbrains.anko.collections.forEachReversedByIndex
 import java.util.*
 

@@ -49,8 +49,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onStop() {
-        service?.apply {
-            stopPlay()
+        if (service != null) {
             unbindService(connection)
             service = null
         }

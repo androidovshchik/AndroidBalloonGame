@@ -2,6 +2,8 @@ package defpackage
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import defpackage.models.Balloon
+import defpackage.models.RectB
 
 @Suppress("MemberVisibilityCanBePrivate")
 class TexturePack(val bitmap: Bitmap) {
