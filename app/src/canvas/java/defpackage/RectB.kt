@@ -20,14 +20,20 @@ fun ArrayList<RectB>.applyLast(value: Int): Boolean {
     return append(value)
 }
 
+@Suppress("MemberVisibilityCanBePrivate")
 class RectB {
 
     val rect = Rect(Int.MIN_VALUE, Int.MIN_VALUE, Int.MIN_VALUE, Int.MIN_VALUE)
 
-    constructor()
-
     constructor(x: Int) {
         rect.left = x
+    }
+
+    constructor(x: Int, y: Int) {
+        rect.apply {
+            left = x
+            top = y
+        }
     }
 
     constructor(x: Int, y: Int, width: Int, height: Int) {
@@ -50,8 +56,10 @@ class RectB {
     fun changeSize(size: Rect) {
         if (hasZeroPoint) {
             rect.apply {
-                left -= (size.width() - width()) / 2
-                top -= (size.width() - height()) / 2
+                if (hasSize) {
+                    left -= (size.width() - width()) / 2
+                    top -= (size.width() - height()) / 2
+                }
                 right = left + size.width()
                 bottom = top + size.height()
             }
