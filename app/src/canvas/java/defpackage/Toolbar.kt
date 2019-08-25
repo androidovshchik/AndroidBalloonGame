@@ -24,7 +24,25 @@ class Toolbar(context: Context) {
         paint.getTextBounds("0", 0, 1, this)
     }
 
-    fun onDraw(canvas: Canvas, fps: Int) {
+    private var lastCountAt = 0L
+
+    private var lastFps = 0
+
+    private var frames = 0
+
+    private val fps: Int
+        get() {
+            val now = System.currentTimeMillis()
+            if (now - lastCountAt >= 1000) {
+                lastCountAt = now
+                lastFps = frames
+                frames = 0
+            }
+            frames++
+            return lastFps
+        }
+
+    fun onDraw(canvas: Canvas) {
         val text = "${BuildConfig.FLAVOR.toUpperCase()} $fps FPS"
         paint.color = 0x56000000
         canvas.drawRect(0f, 0f, canvas.width.toFloat(), height, paint)

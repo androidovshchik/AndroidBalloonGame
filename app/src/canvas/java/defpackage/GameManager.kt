@@ -22,12 +22,6 @@ class GameManager(context: Context) : BaseManager() {
 
     private var lastDrawAt = 0L
 
-    private var lastCountAt = 0L
-
-    private var lastFps = 0
-
-    private var frames = 0
-
     init {
         onInit(context)
     }
@@ -57,40 +51,39 @@ class GameManager(context: Context) : BaseManager() {
         if (output.isRecycled) {
             return
         }
-        lastCountAt = System.currentTimeMillis()
         canvas.setBitmap(output)
         canvas.drawColor(colorPrimary)
         synchronized(this) {
+            if ((1..100).random() <= BuildConfig.CHANCE) {
+                balloons.append(canvas)
+            }
             val now = System.currentTimeMillis()
-            val delay = if (lastDrawAt > 0) now - lastDrawAt else 0
+            val delay = if (lastDrawAt > 0) {
+                now - lastDrawAt
+            } else 0
             lastDrawAt = now
             val iterator = balloons.iterator()
             while (iterator.hasNext()) {
-                val balloon = iterator.next()
-                textures.getOrNull(balloon.texture)?.run {
-                    if (bitmap.isRecycled) {
-
-                    }
-                    balloon.run {
-                        // must be before changing size
-                        // return part of texture to draw
-                        parts.getOrNull(animate(time))?.let {
-                            // must be before move
-                            // changes size of rect to draw
-                            position.changeSize(it.rect)
-                            if (!move(delay)) {
-                                return false
-                            }
-                            canvas.drawBitmap(bitmap, it.rect, position.rect, null)
-                            return true
+                iterator.next().run {
+                    textures.getOrNull(texture)?.run {
+                        if (!bitmap.isRecycled) {
+                            parts.getOrNull(animate(now))?.let {
+                                position.changeSize(it.rect)
+                                if (move(delay)) {
+                                    canvas.drawBitmap(bitmap, it.rect, position.rect, null)
+                                } else {
+                                    iterator.remove()
+                                }
+                            } ?: iterator.remove()
+                        } else {
+                            iterator.remove()
                         }
-                    }
-                    iterator.remove()
-                } ?: iterator.remove()
+                    } ?: iterator.remove()
+                }
             }
         }
         if (BuildConfig.DEBUG) {
-            toolbar.onDraw(canvas, fps)
+            toolbar.onDraw(canvas)
         }
     }
 
@@ -113,18 +106,6 @@ class GameManager(context: Context) : BaseManager() {
             it.release()
         }
     }
-
-    private val fps: Int
-        get() {
-            val now = System.currentTimeMillis()
-            if (now - lastCountAt >= 1000) {
-                lastCountAt = now
-                lastFps = frames
-                frames = 0
-            }
-            frames++
-            return lastFps
-        }
 
     companion object {
 
