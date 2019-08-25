@@ -2,9 +2,7 @@ package defpackage
 
 import android.app.ActivityManager
 import android.app.Service
-import android.content.ContentResolver
 import android.content.Intent
-import android.net.Uri
 import android.os.IBinder
 import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -48,11 +46,11 @@ class SoundService : Service() {
         return true
     }
 
-    fun playSound(name: String) {
+    fun playSound(id: Int) {
         exoPlayer.apply {
             prepare(
                 rawSoundFactory.createMediaSource(
-                    Uri.parse("${ContentResolver.SCHEME_ANDROID_RESOURCE}://$packageName/raw/$name")
+                    RawResourceDataSource.buildRawResourceUri(id)
                 )
             )
             playWhenReady = true

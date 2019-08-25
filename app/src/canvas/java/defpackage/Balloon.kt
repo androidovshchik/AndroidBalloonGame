@@ -38,7 +38,7 @@ class Balloon(val id: Long, w: Int, h: Int) {
         position.apply {
             check(hasZeroPoint && hasSize)
             moveUp((delay * BuildConfig.SPEED / 1000f).roundToInt())
-            return rect.bottom <= 0
+            return rect.bottom > 0
         }
     }
 

@@ -35,11 +35,12 @@ class GameManager(context: Context) : BaseManager() {
             "pink_balloon",
             "yellow_balloon"
         ).forEach { name ->
-            textures.add(TexturePack(readBitmap(context, name)).apply {
+            val bitmap = readBitmap(context, name)
+            textures.add(TexturePack(bitmap).apply {
                 readText(context, name).lines().forEach { line ->
                     if (PATTERN.matches(line)) {
                         line.split(":").getOrNull(1)?.let {
-                            parts.applyLast(it.trim().toInt())
+                            parts.applyLast(bitmap.width, bitmap.height, it.trim().toInt())
                         }
                     }
                 }
@@ -110,6 +111,6 @@ class GameManager(context: Context) : BaseManager() {
     companion object {
 
         @JvmStatic
-        val PATTERN = "(x|y|width|height): ".toRegex()
+        val PATTERN = "\\s+(x|y|width|height):.+".toRegex()
     }
 }

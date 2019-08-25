@@ -7,6 +7,7 @@ import android.content.ContextWrapper
 import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
+import androidovshchik.jerrygame.R
 import androidx.appcompat.app.AppCompatActivity
 import org.jetbrains.anko.activityManager
 import org.jetbrains.anko.frameLayout
@@ -44,7 +45,7 @@ class MainActivity : AppCompatActivity() {
 
     fun playBalloonPop() {
         if (!isFinishing) {
-            service?.playSound("balloon_pop")
+            service?.playSound(R.raw.balloon_pop)
         }
     }
 

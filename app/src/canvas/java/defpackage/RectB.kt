@@ -6,11 +6,11 @@ import android.graphics.Rect
 
 fun ArrayList<RectB>.append(x: Int) = add(RectB(x))
 
-fun ArrayList<RectB>.applyLast(value: Int): Boolean {
+fun ArrayList<RectB>.applyLast(w: Int, h: Int, value: Int): Boolean {
     lastOrNull()?.rect?.apply {
         when {
-            left == Int.MIN_VALUE -> left = value
-            top == Int.MIN_VALUE -> top = value
+            left == Int.MIN_VALUE -> left = value - 1024 + w
+            top == Int.MIN_VALUE -> top = value - 1024 + h
             right == Int.MIN_VALUE -> right = left + value
             bottom == Int.MIN_VALUE -> bottom = top + value
             else -> return append(value)
@@ -58,7 +58,7 @@ class RectB {
             rect.apply {
                 if (hasSize) {
                     left -= (size.width() - width()) / 2
-                    top -= (size.width() - height()) / 2
+                    top -= (size.height() - height()) / 2
                 }
                 right = left + size.width()
                 bottom = top + size.height()

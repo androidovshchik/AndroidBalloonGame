@@ -125,9 +125,7 @@ class GameSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope, Ges
         return detector.onTouchEvent(event)
     }
 
-    override fun onDown(e: MotionEvent) = false
-
-    override fun onSingleTapUp(e: MotionEvent): Boolean {
+    override fun onDown(e: MotionEvent): Boolean {
         if (manager.onSingleTap(e.x, e.y)) {
             context.activity()?.let {
                 if (it is MainActivity) {
@@ -137,6 +135,8 @@ class GameSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope, Ges
         }
         return false
     }
+
+    override fun onSingleTapUp(e: MotionEvent) = false
 
     override fun onScroll(e1: MotionEvent, e2: MotionEvent, distanceX: Float, distanceY: Float) = false
 
