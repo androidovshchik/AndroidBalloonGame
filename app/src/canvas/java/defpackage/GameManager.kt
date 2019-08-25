@@ -69,14 +69,14 @@ class GameManager(context: Context) : BaseManager() {
             while (iterator.hasNext()) {
                 val balloon = iterator.next()
                 textures.getOrNull(balloon.texture)?.run {
-                    if (!drawBalloon(canvas, renderedAt, balloon)) {
+                    if (!onDraw(canvas, renderedAt, balloon)) {
                         iterator.remove()
                     }
                 } ?: iterator.remove()
             }
         }
         if (BuildConfig.DEBUG) {
-            toolbar.drawText(canvas, window, 0)
+            toolbar.onDraw(canvas, window, 0)
         }
     }
 

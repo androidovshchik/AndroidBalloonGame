@@ -85,7 +85,6 @@ class GameSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope, Ges
                     }
                 }
             }
-            cancel()
         }
         return true
     }

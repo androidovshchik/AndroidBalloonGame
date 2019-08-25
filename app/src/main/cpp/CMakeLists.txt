@@ -1,8 +1,10 @@
-cmake_minimum_required(VERSION 3.4.1)
+cmake_minimum_required(VERSION 2.8)
 
 include_directories(/home/vlad/skia)
 
-add_library(main SHARED main.cpp)
+file(GLOB GAME_SRC "*.h" "*.cpp")
+
+add_library(main SHARED ${GAME_SRC})
 
 add_library(libviewer SHARED IMPORTED)
 set_target_properties(libviewer PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/../jniLibs/${ANDROID_ABI}/libviewer.so)

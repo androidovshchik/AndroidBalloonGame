@@ -3,16 +3,16 @@ package defpackage
 import android.graphics.Point
 import java.util.*
 
-fun LinkedList<Balloon>.append(window: Point) {
+fun LinkedList<Balloon>.append() {
     val id = lastOrNull()?.id ?: 0L
-    add(Balloon(id + 1, window))
+    add(Balloon(id + 1))
 }
 
-class Balloon(val id: Long, window: Point) {
+class Balloon(val id: Long) {
 
     val texture = TEXTURES_RANGE.random()
 
-    val position = RectB((0..window.x).random() - MAX_WIDTH / 2, window.y)
+    val position = RectB()
 
     var createdAt = System.currentTimeMillis()
 
@@ -21,30 +21,37 @@ class Balloon(val id: Long, window: Point) {
     val hasBeenTapped
         get() = tappedAt > 0L
 
-    fun calculatePart(time: Long): Int {
-        val indexes: List<Int>
-        val maxTime: Long
-        var interval: Long
-        if (hasBeenTapped) {
-            indexes = BURST_INDEXES
-            maxTime = BURST_TIME
-            interval = time - tappedAt
+    /**
+     * @return current part of texture or -1
+     */
+    fun update(window: Point, time: Long): Int {
+        return if (hasBeenTapped) {
+            burst(time)
         } else {
-            indexes = SWING_INDEXES
-            maxTime = SWING_TIME
-            interval = time - createdAt
-            while (interval > SWING_TIME) {
-                interval -= SWING_TIME
-            }
+            move(window, time)
+            swing(time)
         }
-        if (interval in 0..maxTime) {
-            indexes.apply {
-                forEachIndexed { i, value ->
-                    if (interval <= maxTime * (i + 1) / size) {
-                        return value
-                    }
-                }
-            }
+    }
+
+    private fun move(window: Point, time: Long) {
+        if () {
+
+            //(0..window.x).random() - MAX_WIDTH / 2, window.y
+        }
+        position.moveY()
+    }
+
+    private fun swing(time: Long): Int {
+        return getIndex((time - createdAt) % SWING_TIME, SWING_TIME, SWING_INDEXES)
+    }
+
+    private fun burst(time: Long): Int {
+        return getIndex(time - tappedAt, BURST_TIME, BURST_INDEXES)
+    }
+
+    private fun getIndex(interval: Long, maxInterval: Long, indexes: List<Int>): Int {
+        if (interval in 0..maxInterval) {
+            return indexes[0] + (interval * indexes.size / maxInterval).toInt()
         }
         return -1
     }

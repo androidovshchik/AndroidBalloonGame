@@ -13,8 +13,8 @@ import org.jetbrains.anko.frameLayout
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.matchParent
 
-tailrec fun Context.activity(): Activity? = when {
-    this is Activity -> this
+tailrec fun Context.activity(): Activity? = when (this) {
+    is Activity -> this
     else -> (this as? ContextWrapper)?.baseContext?.activity()
 }
 

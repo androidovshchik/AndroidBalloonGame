@@ -3,7 +3,6 @@
 package defpackage
 
 import android.graphics.Rect
-import kotlin.math.absoluteValue
 
 fun ArrayList<RectB>.append(x: Int) = add(RectB(x))
 
@@ -25,6 +24,8 @@ class RectB {
 
     val rect = Rect(Int.MIN_VALUE, Int.MIN_VALUE, Int.MIN_VALUE, Int.MIN_VALUE)
 
+    constructor()
+
     constructor(x: Int) {
         rect.left = x
     }
@@ -45,9 +46,7 @@ class RectB {
 
     val isOutOfBox: Boolean
         get() {
-            if (!hasSize) {
-                throw IllegalStateException("This method requires the size of rect must be set")
-            }
+            check(hasSize) { "This method requires the size of rect must be set" }
             return rect.bottom <= 0
         }
 
@@ -63,8 +62,8 @@ class RectB {
     fun changeSize(size: Rect) {
         rect.apply {
             if (hasSize) {
-                val x = (size.width() - width()).absoluteValue / 2
-                val y = (size.width() - height()).absoluteValue / 2
+                val x = (size.width() - width()) / 2
+                val y = (size.width() - height()) / 2
                 set(left - x, top - y, right + x, bottom + y)
             } else {
                 right = left + size.width()
