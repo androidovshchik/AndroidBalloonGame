@@ -33,11 +33,11 @@ android {
     productFlavors {
         canvas {
             buildConfigField("int", "TRAFFIC", "100")// items per minute
-            buildConfigField("long", "INTERVAL", "5000")// ms to move across y
+            buildConfigField("int", "SPEED", "300")// pixels per second
         }
         skia {
             buildConfigField("int", "TRAFFIC", "100")
-            buildConfigField("long", "INTERVAL", "5000")
+            buildConfigField("int", "SPEED", "300")
         }
     }
     buildTypes {

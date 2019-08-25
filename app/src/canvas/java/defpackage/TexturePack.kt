@@ -2,7 +2,6 @@ package defpackage
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Point
 
 @Suppress("MemberVisibilityCanBePrivate")
 class TexturePack(val bitmap: Bitmap) {
@@ -12,7 +11,7 @@ class TexturePack(val bitmap: Bitmap) {
     /**
      * @return if false then balloon will be removed
      */
-    fun onDraw(canvas: Canvas, window: Point, time: Long, balloon: Balloon): Boolean {
+    fun onDraw(canvas: Canvas, time: Long, balloon: Balloon): Boolean {
         if (!bitmap.isRecycled) {
             balloon.run {
                 parts.getOrNull(update(time))?.let {

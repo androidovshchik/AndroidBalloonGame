@@ -30,42 +30,28 @@ class RectB {
         rect.left = x
     }
 
-    constructor(x: Int, y: Int) {
-        rect.apply {
-            left = x
-            top = y
-        }
-    }
-
     constructor(x: Int, y: Int, width: Int, height: Int) {
         rect.set(x, y, x + width, y + height)
     }
 
+    val hasZeroPoint
+        get() = rect.left != Int.MIN_VALUE && rect.top != Int.MIN_VALUE
+
     val hasSize
         get() = rect.right != Int.MIN_VALUE && rect.bottom != Int.MIN_VALUE
 
-    val isOutOfBox: Boolean
-        get() {
-            check(hasSize) { "This method requires the size of rect must be set" }
-            return rect.bottom <= 0
-        }
-
     fun moveY(amount: Int) {
-        if (hasSize) {
-            rect.apply {
-                top -= amount
-                bottom -= amount
-            }
+        if (hasZeroPoint && hasSize) {
+            rect.top -= amount
+            rect.bottom -= amount
         }
     }
 
     fun changeSize(size: Rect) {
-        rect.apply {
-            if (hasSize) {
-                val x = (size.width() - width()) / 2
-                val y = (size.width() - height()) / 2
-                set(left - x, top - y, right + x, bottom + y)
-            } else {
+        if (hasZeroPoint) {
+            rect.apply {
+                left -= (size.width() - width()) / 2
+                top -= (size.width() - height()) / 2
                 right = left + size.width()
                 bottom = top + size.height()
             }
@@ -73,7 +59,7 @@ class RectB {
     }
 
     fun hasPoint(x: Float, y: Float): Boolean {
-        if (hasSize) {
+        if (hasZeroPoint && hasSize) {
             return rect.contains(x.toInt(), y.toInt())
         }
         return false

@@ -8,9 +8,11 @@ import android.graphics.Canvas
 import android.os.Build
 import android.util.AttributeSet
 import android.view.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import org.jetbrains.anko.custom.ankoView
-import java.util.concurrent.atomic.AtomicBoolean
 
 fun ViewManager.gameSurfaceView(theme: Int = 0) = gameSurfaceView(theme) {}
 
@@ -20,18 +22,16 @@ inline fun ViewManager.gameSurfaceView(theme: Int = 0, init: GameSurfaceView.() 
 @Suppress("MemberVisibilityCanBePrivate", "LeakingThis")
 class GameSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope, GestureDetector.OnGestureListener {
 
-    var isRunning = AtomicBoolean(false)
-        private set
-
     private val manager = GameManager(context)
 
     private val detector = GestureDetector(context, this)
 
     private var job: Job? = null
 
-    private var disposable: DisposableHandle? = null
-
     private var output: Bitmap? = null
+
+    val isRunning
+        get() = job?.isActive == true
 
     @JvmOverloads
     constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : super(
@@ -59,34 +59,26 @@ class GameSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope, Ges
     }
 
     @SuppressLint("WrongCall")
-    fun start(): Boolean {
-        if (isRunning.get()) {
-            return false
+    fun start() {
+        if (isRunning) {
+            return
         }
-        disposable?.dispose()
-        job?.apply {
-            if (isActive) {
-                disposable = invokeOnCompletion {
-                    start()
-                }
-                return true
-            }
-        }
-        isRunning.set(true)
         job = launch {
-            while (isRunning.get()) {
-                holder.apply {
+            while (true) {
+                holder.run {
                     lockCanvas(null)?.let {
-                        synchronized(holder) {
-                            onDraw(it)
-                            onPostDraw(it)
+                        try {
+                            synchronized(this) {
+                                onDraw(it)
+                                onPostDraw(it)
+                            }
+                        } finally {
+                            unlockCanvasAndPost(it)
                         }
-                        unlockCanvasAndPost(it)
                     }
                 }
             }
         }
-        return true
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -108,7 +100,10 @@ class GameSurfaceView : SurfaceView, SurfaceHolder.Callback, CoroutineScope, Ges
     }
 
     fun stop() {
-        isRunning.set(false)
+        job?.apply {
+            cancel()
+            job = null
+        }
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
