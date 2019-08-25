@@ -3,7 +3,6 @@ package defpackage
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Point
 import androidovshchik.jerrygame.BuildConfig
 import org.jetbrains.anko.collections.forEachReversedByIndex
 import java.util.*
@@ -21,14 +20,19 @@ class GameManager(context: Context) : BaseManager() {
 
     private val colorPrimary = readColor(context, "colorPrimary")
 
-    var startedAt = 0L
+    private var lastDrawAt = 0L
 
-    var renderedAt = 0L
+    private var lastCountAt = 0L
+
+    private var lastFps = 0
+
+    private var frames = 0
 
     init {
         onInit(context)
     }
 
+    @Synchronized
     override fun onInit(context: Context) {
         arrayOf(
             "blue_balloon",
@@ -37,22 +41,15 @@ class GameManager(context: Context) : BaseManager() {
             "pink_balloon",
             "yellow_balloon"
         ).forEach { name ->
-            readBitmap(name)?.let { bitmap ->
-                synchronized(this) {
-                    textures.add(TexturePack(bitmap))
-                }
-                readText(name)?.let { text ->
-                    Scanner(text).use {
-                        it.useDelimiter("\\s*fish\\s*")
-                        while (it.hasNext()) {
-                            val line = it.nextLine()
-                            synchronized(this) {
-                                textures.last().parts.applyLast(0)
-                            }
+            textures.add(TexturePack(readBitmap(context, name)).apply {
+                readText(context, name).lines().forEach { line ->
+                    if (PATTERN.matches(line)) {
+                        line.split(":").getOrNull(1)?.let {
+                            parts.applyLast(it.trim().toInt())
                         }
                     }
                 }
-            }
+            })
         }
     }
 
@@ -60,23 +57,40 @@ class GameManager(context: Context) : BaseManager() {
         if (output.isRecycled) {
             return
         }
-        val window = Point(output.width, output.height)
+        lastCountAt = System.currentTimeMillis()
         canvas.setBitmap(output)
         canvas.drawColor(colorPrimary)
         synchronized(this) {
-            renderedAt = System.currentTimeMillis()
+            val now = System.currentTimeMillis()
+            val delay = if (lastDrawAt > 0) now - lastDrawAt else 0
+            lastDrawAt = now
             val iterator = balloons.iterator()
             while (iterator.hasNext()) {
                 val balloon = iterator.next()
                 textures.getOrNull(balloon.texture)?.run {
-                    if (!onDraw(canvas, renderedAt, balloon)) {
-                        iterator.remove()
+                    if (bitmap.isRecycled) {
+
                     }
+                    balloon.run {
+                        // must be before changing size
+                        // return part of texture to draw
+                        parts.getOrNull(animate(time))?.let {
+                            // must be before move
+                            // changes size of rect to draw
+                            position.changeSize(it.rect)
+                            if (!move(delay)) {
+                                return false
+                            }
+                            canvas.drawBitmap(bitmap, it.rect, position.rect, null)
+                            return true
+                        }
+                    }
+                    iterator.remove()
                 } ?: iterator.remove()
             }
         }
         if (BuildConfig.DEBUG) {
-            toolbar.onDraw(canvas, window, 0)
+            toolbar.onDraw(canvas, fps)
         }
     }
 
@@ -98,5 +112,23 @@ class GameManager(context: Context) : BaseManager() {
         textures.forEach {
             it.release()
         }
+    }
+
+    private val fps: Int
+        get() {
+            val now = System.currentTimeMillis()
+            if (now - lastCountAt >= 1000) {
+                lastCountAt = now
+                lastFps = frames
+                frames = 0
+            }
+            frames++
+            return lastFps
+        }
+
+    companion object {
+
+        @JvmStatic
+        val PATTERN = "(x|y|width|height): ".toRegex()
     }
 }

@@ -46,7 +46,7 @@ class RectB {
     val hasSize
         get() = rect.right != Int.MIN_VALUE && rect.bottom != Int.MIN_VALUE
 
-    fun moveY(amount: Int) {
+    fun moveUp(amount: Int) {
         if (hasZeroPoint && hasSize) {
             rect.top -= amount
             rect.bottom -= amount
